@@ -1,7 +1,7 @@
 {
   "format": "daydrift-mod-index",
   "version": 1,
-  "generatedAt": "2026-10-25T09:21:52.055Z",
+  "generatedAt": "2026-10-25T10:22:10.974Z",
   "mods": [
     {
       "id": "example_rainy_coffee",
@@ -14,7 +14,7 @@
       "path": "mods/official/example_rainy_coffee",
       "digest": "sha256:727704831dd20aeb0c52d0e68265ab074451e75cf87e9180cf8d6167be8eb925",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-25T09:21:52.046Z",
+      "signedAt": "2026-10-25T10:22:10.968Z",
       "preview": "previews/example_rainy_coffee-1.0.0.webp",
       "permissions": [
         "narrative.choice",

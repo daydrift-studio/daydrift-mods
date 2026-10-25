@@ -3,7 +3,7 @@ import path from "node:path";
 import { verifyMod } from "./lib/signing.mjs";
 import { packDeterministicZip } from "./pack-zip.mjs";
 
-const SITE_ORIGIN = process.env.MODS_SITE_ORIGIN || "https://mods.daydrift.example";
+const SITE_ORIGIN = process.env.MODS_SITE_ORIGIN || "https://daydrift-mods.blym.top";
 
 export function buildIndex(rootDir = ".", options = {}) {
   const absRoot = path.resolve(rootDir);
@@ -170,6 +170,11 @@ export function buildIndex(rootDir = ".", options = {}) {
   const storePublic = path.join(absRoot, "apps/store/public");
   if (fs.existsSync(storePublic)) {
     fs.copyFileSync(catalogPath, path.join(storePublic, "catalog.json"));
+    fs.copyFileSync(indexPath, path.join(storePublic, "index.json"));
+    const indexSigPath = indexPath + ".sig";
+    if (fs.existsSync(indexSigPath)) {
+      fs.copyFileSync(indexSigPath, path.join(storePublic, "index.json.sig"));
+    }
 
     const storeDownloads = path.join(storePublic, "downloads");
     const storePreviews = path.join(storePublic, "previews");

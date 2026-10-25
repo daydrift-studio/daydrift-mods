@@ -1,0 +1,40 @@
+{
+  "format": "daydrift-mod-index",
+  "version": 1,
+  "generatedAt": "2026-10-25T10:22:10.974Z",
+  "mods": [
+    {
+      "id": "example_rainy_coffee",
+      "name": "手冲挂耳咖啡",
+      "version": "1.0.0",
+      "author": "Daydrift Team",
+      "description": "在卧室水壶处增加冲泡热咖啡的生活互动选项，为清晨与深夜增添一丝醇香。",
+      "origin": "official",
+      "channel": "release",
+      "path": "mods/official/example_rainy_coffee",
+      "digest": "sha256:727704831dd20aeb0c52d0e68265ab074451e75cf87e9180cf8d6167be8eb925",
+      "keyId": "official-offline-v1",
+      "signedAt": "2026-10-25T10:22:10.968Z",
+      "preview": "previews/example_rainy_coffee-1.0.0.webp",
+      "permissions": [
+        "narrative.choice",
+        "world.flag"
+      ],
+      "type": "data",
+      "netSyncMode": "client_only",
+      "compatibility": {
+        "minVersionCode": 4,
+        "maxVersionCode": null
+      },
+      "size": 3560,
+      "download": "downloads/example_rainy_coffee-1.0.0.zip",
+      "sha256": "sha256:a9c1e5ce8928427a31ba1f2787635857e1c89c16496b8409a8ee1c5b4b812f8a",
+      "source": "https://github.com/daydrift-studio/daydrift-mod-sdk/tree/main/templates/example_rainy_coffee",
+      "sourceCommit": null,
+      "owners": [
+        "daydrift-studio"
+      ],
+      "license": "CC-BY-4.0"
+    }
+  ]
+}
