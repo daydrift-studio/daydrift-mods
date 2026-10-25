@@ -1,0 +1,22 @@
+name: Stale Submissions
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale submissions
+        uses: actions/stale@v9
+        with:
+          only-labels: 'needs-changes'
+          days-before-stale: 14
+          days-before-close: 3
+          stale-issue-message: '此投稿 Issue 因超过 14 天未补充修改已被标记为 Stale，将在 3 天后自动关闭。如有更新可重新留言开启。'
+          close-issue-message: '此投稿已超时关闭。创作者可随时重新发起新的投稿 Issue。'

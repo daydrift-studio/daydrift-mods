@@ -1,0 +1,95 @@
+name: Sign & Release Mod
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  authorize:
+    if: startsWith(github.event.comment.body, '/sign ') && !github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    outputs:
+      authorized: ${{ steps.auth.outputs.authorized }}
+      commit: ${{ steps.auth.outputs.commit }}
+      channel: ${{ steps.auth.outputs.channel }}
+    steps:
+      - name: Authorize commenter
+        id: auth
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commenter = context.payload.comment.user.login;
+            const res = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: commenter
+            });
+            const perm = res.data.permission;
+            if (perm !== 'admin' && perm !== 'write') {
+              core.setFailed(`User @${commenter} does not have write permissions to sign.`);
+              return;
+            }
+
+            const body = context.payload.comment.body.trim();
+            const parts = body.split(/\s+/);
+            const commit = parts[1];
+            const channel = parts[2] === 'beta' ? 'beta' : 'release';
+
+            core.setOutput('authorized', 'true');
+            core.setOutput('commit', commit);
+            core.setOutput('channel', channel);
+
+  sign:
+    needs: authorize
+    if: needs.authorize.outputs.authorized == 'true'
+    runs-on: ubuntu-latest
+    environment: signing
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Index & Verify
+        run: pnpm run build:store
+
+      - name: Reply to Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `✨ **签名并上架成功**！\n- 渠道：\`${{ needs.authorize.outputs.channel }}\`\n- 关联 Commit：\`${{ needs.authorize.outputs.commit }}\``
+            });
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              labels: ['signed']
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              state: 'closed'
+            });
