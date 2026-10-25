@@ -1,0 +1,39 @@
+{
+  "testKey": {
+    "keyId": "test-key-01",
+    "label": "Test Key for Vectors",
+    "channel": "release",
+    "publicKey": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "x": "LgBJ2BxK2Qx6KwM5LwKrwG8oOY11orKViuAWBXPQruU"
+    },
+    "revoked": false,
+    "createdAt": "2026-10-25",
+    "privateKey": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "d": "zPO7gXr5XchlFCoDHGFsdYobMqsjg02jP4s6PFn-dBA",
+      "x": "LgBJ2BxK2Qx6KwM5LwKrwG8oOY11orKViuAWBXPQruU"
+    }
+  },
+  "signedAt": "2026-10-25T12:00:00.000Z",
+  "testFiles": [
+    {
+      "relPath": "data/中文测试.json",
+      "content": "{\"测试\": true}\n"
+    },
+    {
+      "relPath": "manifest.json",
+      "content": "{\n  \"id\": \"vector_sample_mod\",\n  \"name\": \"测试向量模组\",\n  \"version\": \"1.0.0\",\n  \"type\": \"data\"\n}\n"
+    },
+    {
+      "relPath": "scripts/hello.lua",
+      "content": "print(\"hello test vector\")\n"
+    }
+  ],
+  "lines": "fae97e6b007f32f5fc1d565d05fbbd8a5fa1cd8182ceb64d12b8d60444b5ab83 data/中文测试.json\nf2e2d90798f80eff0ffdfc608ea1f2f6438df4757ebfb497f48b63ecf3d6815e manifest.json\n22e415601e477d9787136955837ff6d1e943f49ed898bbe810292880be34f545 scripts/hello.lua\n",
+  "digest": "sha256:cce773a294cd64bb86bb58ba691809ee567e0e5d3b9de6c8ea8f895b6c8e2ab6",
+  "message": "daydrift-signature/1\nmodId=vector_sample_mod\nmodVersion=1.0.0\ndigest=sha256:cce773a294cd64bb86bb58ba691809ee567e0e5d3b9de6c8ea8f895b6c8e2ab6\nkeyId=test-key-01\nsignedAt=2026-10-25T12:00:00.000Z\n\n",
+  "signature": "LWH7Q3OqsBNV9lfGFvp5hg9X4Rs+U81EaurX+giejUgEw3mwH+pwTvhBpeeKKhIL2AFGyGE3XlJYZ+g9hF1wCA=="
+}

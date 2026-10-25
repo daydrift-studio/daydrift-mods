@@ -1,0 +1,19 @@
+{
+  "name": "@daydrift/mods",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "keygen": "node tools/keygen.mjs",
+    "sign": "node tools/sign.mjs",
+    "verify": "node tools/verify.mjs",
+    "index": "node tools/build-index.mjs",
+    "pack": "node tools/pack-zip.mjs",
+    "test:signing": "node --test test/signing.test.mjs",
+    "test:zip": "node --test test/zip.test.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.3"
+  }
+}

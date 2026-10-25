@@ -1,0 +1,23 @@
+{
+  "interactions": {
+    "kettle": [
+      {
+        "id": "brew_coffee",
+        "text": "[模组] 冲泡一杯热挂耳咖啡",
+        "dialogue": {
+          "speaker": "我",
+          "lines": [
+            "热水缓缓注入滤纸，深褐色的咖啡油脂在蒸汽中泛起微光。",
+            "整间卧室都弥漫着微苦而温暖的烘焙香气。"
+          ],
+          "set_flag": {
+            "brewed_coffee": true
+          },
+          "set_mod_data": {
+            "coffee_count": 1
+          }
+        }
+      }
+    ]
+  }
+}

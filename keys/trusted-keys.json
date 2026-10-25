@@ -1,0 +1,40 @@
+{
+  "keys": [
+    {
+      "keyId": "official-offline-v1",
+      "label": "Daydrift official (offline)",
+      "channel": "release",
+      "publicKey": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "5wWJfKfXuvrtbr0GDayT-8IUkIr-dwOhaSxsGZ732Zc"
+      },
+      "revoked": false,
+      "createdAt": "2026-10-25"
+    },
+    {
+      "keyId": "ci-release-v1",
+      "label": "Daydrift CI release",
+      "channel": "release",
+      "publicKey": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "a_p8hWXR-WQUwWzqgRuvBn-_WAfGSIbdGJf796ZeBFI"
+      },
+      "revoked": false,
+      "createdAt": "2026-10-25"
+    },
+    {
+      "keyId": "ci-beta-v1",
+      "label": "Daydrift CI beta",
+      "channel": "beta",
+      "publicKey": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "AkQLbr_mVA_3nwQdO-kBnZi_HbIYsLLpn_W-dS2k4BY"
+      },
+      "revoked": false,
+      "createdAt": "2026-10-25"
+    }
+  ]
+}

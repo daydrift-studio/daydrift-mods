@@ -1,0 +1,26 @@
+# Private keys - NEVER commit!
+*.key.json
+*.pem
+private.json
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build and temporary files
+dist/
+build/
+.cache/
+temp/
+tmp/
+*.zip
+
+# System artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp

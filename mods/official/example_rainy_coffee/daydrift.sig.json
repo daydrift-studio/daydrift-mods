@@ -1,0 +1,10 @@
+{
+  "format": "daydrift-signature",
+  "version": 1,
+  "modId": "example_rainy_coffee",
+  "modVersion": "1.0.0",
+  "digest": "sha256:727704831dd20aeb0c52d0e68265ab074451e75cf87e9180cf8d6167be8eb925",
+  "keyId": "official-offline-v1",
+  "signedAt": "2026-10-25T09:13:31.084Z",
+  "signature": "L/Zl0xRD29rHAOO+33Wt0224qZz83xV/nOwWXCCyPuDOQF+zRgiO2XRAlPeYeLDbZooiiiCXSZAl7CoD7bkSDg=="
+}
