@@ -9,6 +9,9 @@
     "verify": "node tools/verify.mjs",
     "index": "node tools/build-index.mjs",
     "pack": "node tools/pack-zip.mjs",
+    "should-build": "node tools/should-build.mjs",
+    "build:store": "node tools/build-index.mjs --strict && pnpm --filter @daydrift/store build",
+    "build": "pnpm run build:store",
     "test:signing": "node --test test/signing.test.mjs",
     "test:zip": "node --test test/zip.test.mjs",
     "test": "node --test test/*.test.mjs"

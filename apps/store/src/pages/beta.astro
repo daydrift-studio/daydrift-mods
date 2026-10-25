@@ -1,0 +1,131 @@
+---
+import Layout from "../layouts/Layout.astro";
+import fs from "node:fs";
+import path from "node:path";
+
+const indexPath = path.resolve("../../index.json");
+let catalog = { mods: [] };
+if (fs.existsSync(indexPath)) {
+  catalog = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
+}
+
+const betaMods = (catalog.mods || []).filter((m) => m.channel === "beta");
+---
+
+<Layout title="先行测试模组" currentTab="beta">
+  <div class="container">
+    <div class="channel-banner">
+      <span class="badge badge-beta banner-badge">BETA TESTING CHANNEL</span>
+      <h1 class="banner-title">先行测试模组专区</h1>
+      <p class="banner-desc">
+        本专区收录处于抢先体验、实验特性阶段或快速迭代期的社区/官方模组。先行测试模组由 <code>ci-beta-v1</code> 密钥独立签名。
+      </p>
+
+      <div class="warning-alert">
+        <strong>⚠️ 游玩提醒：</strong> 先行测试模组可能包含未定型的试验性交互，或在极端情况下导致剧情标记异常。在测试安装前，请务必前往设置界面导出或备份您的游戏本地存档。
+      </div>
+    </div>
+
+    <div class="mods-section">
+      {betaMods.length > 0 ? (
+        <div class="mod-grid">
+          {betaMods.map((mod) => (
+            <div class="mod-card">
+              <!-- Card contents -->
+              <div class="mod-header-row">
+                <h3 class="mod-name">
+                  <a href={`/mod/${mod.id}`}>{mod.name}</a>
+                </h3>
+                <span class="badge badge-beta">先行测试</span>
+              </div>
+              <p class="mod-desc">{mod.description}</p>
+              <div class="mod-actions">
+                <a href={`/mod/${mod.id}`} class="btn btn-secondary">详情</a>
+                <a href={`/${mod.download}`} class="btn btn-primary" download>下载 ZIP</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-box">
+          <div class="empty-icon">🌱</div>
+          <div class="empty-title">当前暂无先行测试中的模组</div>
+          <p class="empty-desc">所有稳定模组均已入驻全量发布渠道。您也可以阅读投稿指引，向测试渠道提交您的新点子。</p>
+          <a href="/submit" class="btn btn-primary">提交测试模组</a>
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .channel-banner {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .banner-badge {
+    margin-bottom: 0.75rem;
+  }
+
+  .banner-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .banner-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .banner-desc code {
+    background-color: var(--bg-base);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    color: var(--accent-amber);
+  }
+
+  .warning-alert {
+    background-color: rgba(229, 154, 76, 0.08);
+    border-left: 3px solid var(--accent-amber);
+    padding: 1rem 1.25rem;
+    font-size: 0.85rem;
+    color: #e59a4c;
+    line-height: 1.6;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .empty-box {
+    text-align: center;
+    padding: 4rem 1rem;
+    background-color: var(--bg-surface);
+    border: 1px dashed var(--border-subtle);
+    border-radius: 4px;
+  }
+
+  .empty-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>

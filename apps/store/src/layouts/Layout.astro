@@ -1,0 +1,280 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  currentTab?: "all" | "beta" | "submit" | "keys";
+}
+
+const {
+  title,
+  description = "《度日：Daydrift》官方模组扩展商店，所有模组均由官方或社区 Ed25519 签名验证。",
+  currentTab = "all"
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | 度日 Mod 商店</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="https://daydrift.example/favicon.svg" />
+  </head>
+  <body>
+    <header class="store-header">
+      <div class="container header-inner">
+        <a href="/" class="brand-link">
+          <span class="pixel-dot"></span>
+          <span class="brand-title">度日 MOD 商店</span>
+          <span class="brand-sub">STORE</span>
+        </a>
+
+        <nav class="nav-links">
+          <a href="/" class:list={["nav-item", { active: currentTab === "all" }]}>全部模组</a>
+          <a href="/beta" class:list={["nav-item", { active: currentTab === "beta" }]}>先行测试</a>
+          <a href="/submit" class:list={["nav-item", { active: currentTab === "submit" }]}>投稿指引</a>
+          <a href="/keys" class:list={["nav-item", { active: currentTab === "keys" }]}>公钥透明度</a>
+          <a href="https://daydrift.example" class="nav-item back-link" target="_blank">官网首页</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="store-main">
+      <slot />
+    </main>
+
+    <footer class="store-footer">
+      <div class="container footer-inner">
+        <div class="footer-left">
+          <div class="footer-title">《度日：Daydrift》模组创作者商店</div>
+          <p class="footer-desc">所有展示与分发的模组均受 Ed25519 签名校验与确定性 ZIP 保护。严禁恶意脚本与未授权文件访问。</p>
+        </div>
+        <div class="footer-right">
+          <a href="/keys">签名公钥公示</a>
+          <a href="/submit">提交新模组</a>
+          <a href="https://docs.daydrift.example/modding/overview" target="_blank">Mod API 文档</a>
+          <a href="https://github.com/daydrift-studio/daydrift-mod-sdk" target="_blank">Mod SDK 源码</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg-base: #0f1013;
+    --bg-surface: #181a20;
+    --bg-elevated: #232730;
+    --border-subtle: #2b303c;
+    --border-strong: #3f4758;
+    --text-main: #f0f2f5;
+    --text-muted: #9aa1b0;
+    --text-faint: #606877;
+    --accent-amber: #e59a4c;
+    --accent-green: #7ea872;
+    --accent-blue: #639bff;
+    --accent-purple: #b586e3;
+    --radius-sm: 4px;
+    --font-pixel: system-ui, -apple-system, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: var(--font-pixel);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    width: 100%;
+  }
+
+  .store-header {
+    height: 64px;
+    background-color: rgba(24, 26, 32, 0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-subtle);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .header-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .pixel-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-amber);
+  }
+
+  .brand-title {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.05em;
+  }
+
+  .brand-sub {
+    font-size: 0.75rem;
+    color: var(--accent-amber);
+    font-weight: 600;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .nav-item {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: color 0.15s ease;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--accent-amber);
+  }
+
+  .back-link {
+    border-left: 1px solid var(--border-subtle);
+    padding-left: 1.25rem;
+    color: var(--text-faint);
+  }
+
+  .store-main {
+    flex: 1;
+    padding: 2.5rem 0 4rem;
+  }
+
+  .store-footer {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-subtle);
+    padding: 2.5rem 0;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .footer-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    max-width: 480px;
+  }
+
+  .footer-right {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-right a {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .footer-right a:hover {
+    color: var(--accent-amber);
+  }
+
+  /* Shared badges & button styles */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .badge-verified {
+    background-color: rgba(126, 168, 114, 0.15);
+    color: #92d683;
+    border: 1px solid rgba(126, 168, 114, 0.3);
+  }
+
+  .badge-beta {
+    background-color: rgba(229, 154, 76, 0.15);
+    color: #e59a4c;
+    border: 1px solid rgba(229, 154, 76, 0.3);
+  }
+
+  .badge-tag {
+    background-color: var(--bg-elevated);
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-amber);
+    color: #0f1013;
+  }
+
+  .btn-primary:hover {
+    background-color: #f3ad65;
+  }
+
+  .btn-secondary {
+    background-color: var(--bg-elevated);
+    color: var(--text-main);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent-amber);
+  }
+</style>

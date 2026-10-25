@@ -1,0 +1,122 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="模组审查与签名手册">
+  <div class="container">
+    <div class="page-header">
+      <div class="header-tag">MAINTAINER RUNBOOK</div>
+      <h1 class="page-title">《度日》模组审核与签名操作手册</h1>
+      <p class="page-desc">
+        本文档供 Daydrift Studio 维护者查阅，指导如何安全审核社区模组 Issue 并触发 CI 自动签名流水线。
+      </p>
+    </div>
+
+    <div class="card doc-card">
+      <h2 class="card-heading">1. 权限与授权指令</h2>
+      <p>仅拥有 <code>daydrift-studio/daydrift-mods</code> 仓库 <code>write</code> / <code>admin</code> 权限的成员可在投稿 Issue 评论区触发签名指令：</p>
+      
+      <div class="cmd-block">
+        <code>/sign &lt;commit&gt;</code>
+        <div class="cmd-desc">签发为正式发布版本（使用 Release 渠道私钥，Mod 入库 <code>mods/community/&lt;id&gt;</code>，商店显示「官方认证」）。</div>
+      </div>
+
+      <div class="cmd-block">
+        <code>/sign &lt;commit&gt; beta</code>
+        <div class="cmd-desc">签发为先行测试版本（使用 Beta 渠道私钥，Mod 入库 <code>mods/beta/&lt;id&gt;</code>，商店显示「先行测试」）。</div>
+      </div>
+    </div>
+
+    <div class="card doc-card">
+      <h2 class="card-heading">2. 流水线执行与自动上架</h2>
+      <ol class="step-list">
+        <li>收到 <code>/sign</code> 命令后，<code>sign.yml</code> 工作流启动；</li>
+        <li>进入 <code>signing</code> 受保护环境，注入对应渠道的 Ed25519 私钥；</li>
+        <li>拉取对应 commit，重新严格执行安全与沙箱检查；</li>
+        <li>生成 <code>daydrift.sig.json</code>，更新 <code>index.json</code> 与 <code>catalog.json</code>，构建确定性 ZIP；</li>
+        <li>自动提交至 <code>main</code> 分支并回复 Issue，完成上架并关闭 Issue。</li>
+      </ol>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .header-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-amber);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-desc {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  .doc-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1.75rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .card-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--accent-amber);
+    padding-left: 0.5rem;
+  }
+
+  .cmd-block {
+    background-color: var(--bg-base);
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+    margin: 1rem 0;
+  }
+
+  .cmd-block code {
+    color: var(--accent-amber);
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .cmd-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+  }
+
+  .step-list {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .step-list code {
+    background-color: var(--bg-base);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    color: var(--accent-amber);
+  }
+</style>

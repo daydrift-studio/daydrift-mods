@@ -166,6 +166,24 @@ export function buildIndex(rootDir = ".", options = {}) {
   fs.writeFileSync(indexPath, JSON.stringify(indexDoc, null, 2) + "\n", "utf-8");
   fs.writeFileSync(catalogPath, JSON.stringify(catalogDoc, null, 2) + "\n", "utf-8");
 
+  // Sync to apps/store/public if present
+  const storePublic = path.join(absRoot, "apps/store/public");
+  if (fs.existsSync(storePublic)) {
+    fs.copyFileSync(catalogPath, path.join(storePublic, "catalog.json"));
+
+    const storeDownloads = path.join(storePublic, "downloads");
+    const storePreviews = path.join(storePublic, "previews");
+    if (!fs.existsSync(storeDownloads)) fs.mkdirSync(storeDownloads, { recursive: true });
+    if (!fs.existsSync(storePreviews)) fs.mkdirSync(storePreviews, { recursive: true });
+
+    for (const f of fs.readdirSync(downloadsDir)) {
+      fs.copyFileSync(path.join(downloadsDir, f), path.join(storeDownloads, f));
+    }
+    for (const f of fs.readdirSync(previewsDir)) {
+      fs.copyFileSync(path.join(previewsDir, f), path.join(storePreviews, f));
+    }
+  }
+
   return { indexDoc, catalogDoc, count: indexedMods.length };
 }
 

@@ -1,7 +1,7 @@
 {
   "format": "daydrift-mod-catalog",
   "version": 1,
-  "generatedAt": "2026-10-25T09:14:04.377Z",
+  "generatedAt": "2026-10-25T09:21:52.055Z",
   "site": "https://mods.daydrift.example",
   "mods": [
     {
@@ -24,7 +24,7 @@
       },
       "digest": "sha256:727704831dd20aeb0c52d0e68265ab074451e75cf87e9180cf8d6167be8eb925",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-25T09:14:04.377Z",
+      "signedAt": "2026-10-25T09:21:52.054Z",
       "size": 3560,
       "sha256": "sha256:a9c1e5ce8928427a31ba1f2787635857e1c89c16496b8409a8ee1c5b4b812f8a",
       "downloadUrl": "https://mods.daydrift.example/downloads/example_rainy_coffee-1.0.0.zip",

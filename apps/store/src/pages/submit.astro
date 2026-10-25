@@ -1,0 +1,198 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="模组投稿指引" currentTab="submit">
+  <div class="container">
+    <div class="page-header">
+      <div class="header-tag">CREATOR ECOSYSTEM</div>
+      <h1 class="page-title">向《度日：Daydrift》模组商店投稿</h1>
+      <p class="page-desc">
+        《度日》致力于构建开放、轻量、安全的生活向模组创作生态。我们欢迎创作者为游戏增添更多温馨的生活切片。
+      </p>
+    </div>
+
+    <div class="guide-grid">
+      <div class="guide-main">
+        <section class="guide-card">
+          <h2 class="card-heading">1. 投稿核心标准与准入规范</h2>
+          <ul class="checklist">
+            <li>
+              <strong>合法合规与开源协议</strong>：社区模组必须附带清晰的开源协议（如 MIT、CC-BY-4.0 等），并提供可追溯的公共 Git 源码仓库。
+            </li>
+            <li>
+              <strong>严谨的目录结构与清单</strong>：必须在根目录包含符合 Schema 的 <code>manifest.json</code>，声明 <code>id</code>、<code>version</code>（三段式语义化版本，如 <code>1.0.0</code>）、<code>permissions</code>。
+            </li>
+            <li>
+              <strong>安全沙箱纯洁性</strong>：所有游戏能力调用必须通过 <code>ModAPI.*</code> 门面。严禁携带原生动态链接库、可执行文件或尝试逃逸沙箱。
+            </li>
+            <li>
+              <strong>规范的 16:9 预览封面</strong>：必须在模组根目录下提供 <code>preview.webp</code> 或 PNG/JPG（推荐 1280×720，不小于 640×360，≤ 1 MiB）。
+            </li>
+          </ul>
+        </section>
+
+        <section class="guide-card">
+          <h2 class="card-heading">2. GitHub Issue 投稿提交流程</h2>
+          <p class="step-text">我们采用基于 GitHub Issue 的全自动 CI 审查与签名流程：</p>
+          <ol class="step-list">
+            <li>
+              前往 GitHub 仓库 <a href="https://github.com/daydrift-studio/daydrift-mods/issues" target="_blank">daydrift-studio/daydrift-mods/issues</a> 点击 <strong>New Issue</strong>；
+            </li>
+            <li>
+              选择 <strong>[模组提交] Mod Submission</strong> 表单模版；
+            </li>
+            <li>
+              填写您的模组基本信息：源码仓库 URL、Git Commit SHA、申请渠道（<code>release</code> 或 <code>beta</code>）；
+            </li>
+            <li>
+              提交 Issue 后，GitHub Actions 机器人将自动拉取指定 Commit 进行目录与安全预检，并在评论区输出预检结果与文件清单；
+            </li>
+            <li>
+              审查维护者在确认内容无违规后，通过在评论区发送 <code>/sign &lt;commit&gt;</code> 指令触发流水线自动签名并入库上架！
+            </li>
+          </ol>
+        </section>
+      </div>
+
+      <div class="guide-aside">
+        <div class="aside-box">
+          <div class="aside-title">开发工具包与模板</div>
+          <p class="aside-desc">使用官方提供的标准模板快速搭建您的第一个《度日》模组：</p>
+          <a href="https://github.com/daydrift-studio/daydrift-mod-sdk" class="btn btn-primary btn-block" target="_blank">
+            获取 Mod SDK ↗
+          </a>
+          <a href="https://docs.daydrift.example/modding/overview" class="btn btn-secondary btn-block" target="_blank">
+            查阅开发文档 ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .header-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-amber);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-desc {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  .guide-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+  }
+
+  @media (max-width: 800px) {
+    .guide-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .guide-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1.75rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .card-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--accent-amber);
+    padding-left: 0.5rem;
+  }
+
+  .checklist {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .checklist code {
+    background-color: var(--bg-base);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    color: var(--accent-amber);
+  }
+
+  .step-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .step-list {
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .step-list a {
+    color: var(--accent-amber);
+    text-decoration: none;
+  }
+
+  .step-list code {
+    background-color: var(--bg-base);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    color: var(--accent-amber);
+  }
+
+  .aside-box {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+
+  .aside-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .aside-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .btn-block {
+    width: 100%;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+</style>

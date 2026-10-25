@@ -1,0 +1,193 @@
+---
+import Layout from "../layouts/Layout.astro";
+import fs from "node:fs";
+import path from "node:path";
+
+const keysPath = path.resolve("../../keys/trusted-keys.json");
+let keyData = { keys: [] };
+if (fs.existsSync(keysPath)) {
+  keyData = JSON.parse(fs.readFileSync(keysPath, "utf-8"));
+}
+
+const keys = keyData.keys || [];
+---
+
+<Layout title="可信签名公钥透明度" currentTab="keys">
+  <div class="container">
+    <div class="page-header">
+      <div class="header-tag">PUBLIC KEY TRANSPARENCY</div>
+      <h1 class="page-title">Ed25519 签名公钥透明度公示</h1>
+      <p class="page-desc">
+        《度日：Daydrift》采用离线根密钥与 CI 流水线分级签发体系。所有客户端内置公钥与本公示列表保持绝对一致。
+      </p>
+    </div>
+
+    <div class="keys-list">
+      {keys.map((k) => (
+        <div class="key-card">
+          <div class="key-header">
+            <div class="key-id-box">
+              <span class="key-id-name">{k.keyId}</span>
+              <span class:list={["badge", k.revoked ? "badge-revoked" : k.channel === "beta" ? "badge-beta" : "badge-verified"]}>
+                {k.revoked ? "已吊销 (Revoked)" : k.channel === "beta" ? "先行测试渠道 (Beta)" : "发布渠道 (Release)"}
+              </span>
+            </div>
+            <span class="key-date">启用日期：{k.createdAt}</span>
+          </div>
+
+          <div class="key-label">{k.label}</div>
+
+          <div class="key-jwk-box">
+            <div class="jwk-title">JWK 公钥 (OKP / Ed25519)：</div>
+            <pre class="jwk-code">{JSON.stringify(k.publicKey, null, 2)}</pre>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="verify-instructions">
+      <h2 class="verify-heading">如何在本地独立校验模组签名？</h2>
+      <p class="verify-text">
+        任何人无需依赖任何云端服务，即可使用开源工具本地验证下载的模组包完整性：
+      </p>
+      <pre class="cli-box"><code># 解压下载的 zip 并在模组目录下运行：
+node tools/verify.mjs &lt;mod_directory&gt;
+
+# 输出示例：
+# [OK] Mod verified (Release channel): official-offline-v1
+# Digest: sha256:... (6 files)</code></pre>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .header-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-amber);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-desc {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  .keys-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .key-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+
+  .key-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .key-id-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .key-id-name {
+    font-family: monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .badge-revoked {
+    background-color: rgba(230, 80, 80, 0.15);
+    color: #ff7878;
+    border: 1px solid rgba(230, 80, 80, 0.3);
+  }
+
+  .key-date {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+
+  .key-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .key-jwk-box {
+    background-color: var(--bg-base);
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .jwk-title {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    margin-bottom: 0.5rem;
+  }
+
+  .jwk-code {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--accent-amber);
+    line-height: 1.4;
+  }
+
+  .verify-instructions {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1.75rem;
+  }
+
+  .verify-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid var(--accent-amber);
+    padding-left: 0.5rem;
+  }
+
+  .verify-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .cli-box {
+    background-color: var(--bg-base);
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #f0f2f5;
+    line-height: 1.5;
+  }
+</style>

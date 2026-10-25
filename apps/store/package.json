@@ -1,0 +1,14 @@
+{
+  "name": "@daydrift/store",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --port 4323",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.4.1"
+  }
+}

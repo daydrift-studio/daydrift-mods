@@ -1,0 +1,426 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import fs from "node:fs";
+import path from "node:path";
+
+export async function getStaticPaths() {
+  const indexPath = path.resolve("../../index.json");
+  if (!fs.existsSync(indexPath)) return [];
+  const catalog = JSON.parse(fs.readFileSync(indexPath, "utf-8"));
+  return (catalog.mods || []).map((mod) => ({
+    params: { id: mod.id },
+    props: { mod }
+  }));
+}
+
+const { mod } = Astro.props;
+
+// Vocabulary for permissions
+const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> = {
+  "narrative.say": { label: "对白显示", desc: "在画面上展示主角内心独白或 NPC 对白" },
+  "narrative.choice": { label: "分支选择", desc: "弹出多分支互动选项并接收玩家输入" },
+  "interaction.inject": { label: "交互物注入", desc: "向场景原生生活物体注入额外的交互分支" },
+  "ui.toast": { label: "气泡通知", desc: "在游戏屏幕顶栏弹出点阵风格提示通知" },
+  "world.time": { label: "世界时钟", desc: "读取当前游戏生存天数与四时时段，或推进时段" },
+  "world.flag": { label: "全局标记", desc: "跨场景读写全局生活状态黑板标记" },
+  "storage.mod": { label: "独立持久化", desc: "读写本 Mod 命名空间下的隔离本地存档" },
+  "asset.texture": { label: "贴图加载", desc: "动态读取本 Mod 内部的 PNG 纹理资源" },
+  "asset.audio": { label: "音频加载", desc: "动态读取本 Mod 内部的 OGG 音频流资源" }
+};
+---
+
+<Layout title={`${mod.name} (v${mod.version})`} description={mod.description}>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">← 返回模组目录</a>
+      <span class="bc-sep">/</span>
+      <span class="bc-current">{mod.name}</span>
+    </div>
+
+    <div class="mod-detail-header">
+      <div class="header-main">
+        <div class="title-row">
+          <h1 class="mod-title">{mod.name}</h1>
+          <span class="mod-version-tag">v{mod.version}</span>
+          <span class:list={["badge", mod.channel === "beta" ? "badge-beta" : "badge-verified"]}>
+            {mod.channel === "beta" ? "先行测试" : "官方认证"}
+          </span>
+        </div>
+
+        <div class="author-row">
+          <span>创作者：<strong>{mod.author}</strong></span>
+          <span>许可证：<strong>{mod.license}</strong></span>
+          <span>同步模式：<strong>{mod.netSyncMode}</strong></span>
+          {mod.source && (
+            <a href={mod.source} class="source-link" target="_blank" rel="noopener">
+              查看源码仓库 ↗
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <!-- Left: Content, permissions, preview -->
+      <div class="detail-main">
+        {mod.preview && (
+          <div class="preview-hero">
+            <img src={`/${mod.preview}`} alt={mod.name} class="hero-img" />
+          </div>
+        )}
+
+        <div class="info-block">
+          <h2 class="block-title">模组介绍与切片</h2>
+          <p class="block-desc">{mod.description}</p>
+        </div>
+
+        <div class="info-block">
+          <h2 class="block-title">请求权限声明 (Permissions)</h2>
+          <p class="perm-intro">
+            《度日：Daydrift》采用安全门面沙箱架构。该模组在清单中声明了以下权限，运行时严禁发起任何未授权调用：
+          </p>
+
+          <div class="perm-table">
+            {mod.permissions && mod.permissions.length > 0 ? (
+              mod.permissions.map((p) => {
+                const info = PERMISSION_DESCRIPTIONS[p] || { label: "扩展权限", desc: "自定义沙箱权限" };
+                return (
+                  <div class="perm-row">
+                    <div class="perm-cell-id">
+                      <code>{p}</code>
+                    </div>
+                    <div class="perm-cell-label">{info.label}</div>
+                    <div class="perm-cell-desc">{info.desc}</div>
+                  </div>
+                );
+              })
+            ) : (
+              <div class="perm-empty">本模组为轻量纯数据模组，未请求任何敏感系统权限。</div>
+            )}
+          </div>
+        </div>
+
+        <div class="info-block">
+          <h2 class="block-title">客户端安装与加载步骤</h2>
+          <ol class="install-steps">
+            <li>下载下方的确定性分发压缩包 <code>{mod.id}-{mod.version}.zip</code>；</li>
+            <li>在游戏主菜单点击「模组管理」→「打开模组目录」（或解压至游戏数据目录 <code>user://mods/{mod.id}/</code>）；</li>
+            <li>重新进入游戏，在模组列表中勾选启用。启动时沙箱将自动验证 Ed25519 签名有效性。</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Right: Download card & verification info -->
+      <div class="detail-sidebar">
+        <div class="card download-card">
+          <div class="card-title">分发包下载</div>
+          <div class="file-stat">
+            <span class="file-name">{mod.id}-{mod.version}.zip</span>
+            <span class="file-size">{Math.round(mod.size / 1024)} KiB</span>
+          </div>
+
+          <a href={`/${mod.download}`} class="btn btn-primary btn-block" download>
+            下载此模组 (ZIP)
+          </a>
+
+          <div class="sha-box">
+            <div class="sha-label">ZIP SHA-256 校验和：</div>
+            <div class="sha-val" title={mod.sha256}>{mod.sha256}</div>
+          </div>
+        </div>
+
+        <div class="card verify-card">
+          <div class="card-title">Ed25519 签名存证</div>
+          <div class="verify-stat-row">
+            <span class="v-label">密钥 ID</span>
+            <span class="v-val"><code>{mod.keyId}</code></span>
+          </div>
+          <div class="verify-stat-row">
+            <span class="v-label">签名时间</span>
+            <span class="v-val">{new Date(mod.signedAt).toLocaleString("zh-CN")}</span>
+          </div>
+          <div class="verify-stat-row">
+            <span class="v-label">树摘要</span>
+            <span class="v-val mono-digest" title={mod.digest}>{mod.digest}</span>
+          </div>
+          <div class="verify-stat-row">
+            <span class="v-label">最低版本</span>
+            <span class="v-val">vCode ≥ {mod.compatibility?.minVersionCode || 0}</span>
+          </div>
+
+          <div class="verify-notice">
+            本包由官方 CI 离线密钥或流水线生成，签名覆盖全部代码与资源，防范网络劫持与篡改。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--accent-amber);
+  }
+
+  .bc-sep {
+    margin: 0 0.5rem;
+    color: var(--text-faint);
+  }
+
+  .bc-current {
+    color: var(--text-main);
+  }
+
+  .mod-detail-header {
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .mod-title {
+    font-size: 2rem;
+    font-weight: 800;
+  }
+
+  .mod-version-tag {
+    font-size: 1rem;
+    font-family: monospace;
+    color: var(--text-muted);
+    background-color: var(--bg-surface);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .author-row {
+    display: flex;
+    gap: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+
+  .author-row strong {
+    color: var(--text-main);
+  }
+
+  .source-link {
+    color: var(--accent-amber);
+    text-decoration: none;
+  }
+
+  .source-link:hover {
+    text-decoration: underline;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 860px) {
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .preview-hero {
+    aspect-ratio: 16 / 9;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #15171c;
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 2rem;
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .info-block {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .block-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid var(--accent-amber);
+    padding-left: 0.5rem;
+  }
+
+  .block-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .perm-intro {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .perm-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .perm-row {
+    display: grid;
+    grid-template-columns: 180px 100px 1fr;
+    gap: 1rem;
+    background-color: var(--bg-base);
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    align-items: center;
+  }
+
+  .perm-cell-id code {
+    color: var(--accent-amber);
+    font-size: 0.8rem;
+  }
+
+  .perm-cell-label {
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .perm-cell-desc {
+    color: var(--text-muted);
+  }
+
+  .perm-empty {
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+
+  .install-steps {
+    padding-left: 1.25rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .install-steps code {
+    background-color: var(--bg-base);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    color: var(--accent-amber);
+  }
+
+  /* Sidebar cards */
+  .card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .file-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .file-name {
+    font-family: monospace;
+    color: var(--text-main);
+  }
+
+  .btn-block {
+    width: 100%;
+    margin-bottom: 1.25rem;
+  }
+
+  .sha-box {
+    background-color: var(--bg-base);
+    padding: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .sha-label {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    margin-bottom: 0.25rem;
+  }
+
+  .sha-val {
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--text-muted);
+    word-break: break-all;
+  }
+
+  .verify-stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .v-label {
+    color: var(--text-muted);
+  }
+
+  .v-val {
+    color: var(--text-main);
+  }
+
+  .mono-digest {
+    font-family: monospace;
+    font-size: 0.75rem;
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .verify-notice {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    line-height: 1.5;
+  }
+</style>
