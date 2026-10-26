@@ -1,7 +1,7 @@
 {
   "format": "daydrift-mod-catalog",
   "version": 1,
-  "generatedAt": "2026-10-26T05:44:38.836Z",
+  "generatedAt": "2026-10-26T06:05:20.314Z",
   "site": "https://daydrift-mods.blym.top",
   "mods": [
     {
@@ -22,11 +22,11 @@
         "minVersionCode": 4,
         "maxVersionCode": null
       },
-      "digest": "sha256:727704831dd20aeb0c52d0e68265ab074451e75cf87e9180cf8d6167be8eb925",
+      "digest": "sha256:8059cb6ab2777e424002783dd27fc6b3d316c759c1db2c3f83263055c6b2d2be",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-26T05:44:38.836Z",
-      "size": 3560,
-      "sha256": "sha256:a9c1e5ce8928427a31ba1f2787635857e1c89c16496b8409a8ee1c5b4b812f8a",
+      "signedAt": "2026-10-26T06:05:20.313Z",
+      "size": 3565,
+      "sha256": "sha256:b82e39659d4fc570bd2b0f919da6cc1a5d3bfc6625e69fa4845b83ba1f11fc13",
       "downloadUrl": "https://daydrift-mods.blym.top/downloads/example_rainy_coffee-1.0.0.zip",
       "previewUrl": "https://daydrift-mods.blym.top/previews/example_rainy_coffee-1.0.0.webp",
       "source": "https://github.com/daydrift-studio/daydrift-mod-sdk/tree/main/templates/example_rainy_coffee",

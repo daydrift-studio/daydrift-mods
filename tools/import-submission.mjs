@@ -128,7 +128,7 @@ async function main() {
   // Sign mod
   console.log(`[SIGN] Signing mod '${modId}'...`);
   let keyData = null;
-  const defaultKeyPath = path.join(ROOT_DIR, "keys", "official-offline-v1.private.key.json");
+  const defaultKeyPath = path.join(ROOT_DIR, "keys", "official-offline-v1.key.json");
   const actualKeyPath = keyPath ? path.resolve(keyPath) : defaultKeyPath;
 
   if (fs.existsSync(actualKeyPath)) {

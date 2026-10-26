@@ -3,8 +3,8 @@
   "version": 1,
   "modId": "example_rainy_coffee",
   "modVersion": "1.0.0",
-  "digest": "sha256:727704831dd20aeb0c52d0e68265ab074451e75cf87e9180cf8d6167be8eb925",
+  "digest": "sha256:8059cb6ab2777e424002783dd27fc6b3d316c759c1db2c3f83263055c6b2d2be",
   "keyId": "official-offline-v1",
-  "signedAt": "2026-10-25T09:13:31.084Z",
-  "signature": "L/Zl0xRD29rHAOO+33Wt0224qZz83xV/nOwWXCCyPuDOQF+zRgiO2XRAlPeYeLDbZooiiiCXSZAl7CoD7bkSDg=="
+  "signedAt": "2026-10-26T06:02:39.595Z",
+  "signature": "rKGJPQvMm2CmH60NG1oN0uZwxqXOelYyFRVLeOxIihWG0uCLiT+yKGTMTu/HaE4FBmF/Jqbpcdaa09EiqeFBBw=="
 }
