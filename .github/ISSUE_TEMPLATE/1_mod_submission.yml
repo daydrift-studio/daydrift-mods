@@ -1,0 +1,62 @@
+name: "📦 模组投稿申请 (Mod Submission)"
+description: "提交一个新制作的《度日：Daydrift》模组上架至创意工坊"
+title: "[Mod 投稿] <模组名称>"
+labels: ["mod-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您为《度日：Daydrift》社区创作模组！请填写以下基本信息，并附上已打包的模组文件。
+  - type: input
+    id: mod_id
+    attributes:
+      label: "模组 ID (mod_id)"
+      description: "在 manifest.json 中声明的全局唯一英文 ID（仅限小写字母、数字和下划线，例如 cozy_cat）"
+      placeholder: "example_mod"
+    validations:
+      required: true
+  - type: input
+    id: mod_name
+    attributes:
+      label: "模组中文显示名称"
+      placeholder: "温暖猫咪"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: "首发版本号"
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: "作者署名"
+      placeholder: "您的昵称"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "模组功能简介"
+      placeholder: "简要介绍该模组为游戏带来了哪些新物品、事件、日常切片或互动机制..."
+    validations:
+      required: true
+  - type: textarea
+    id: package_source
+    attributes:
+      label: "模组文件上传或仓库直链"
+      description: "请直接将打包好的 .zip 附件拖拽至此处，或提供您开源仓库的 Release 下载直链"
+      placeholder: "将 .zip 附件拖入此处..."
+    validations:
+      required: true
+  - type: checkboxes
+    id: compliance
+    attributes:
+      label: "合规与准入承诺"
+      options:
+        - label: "本模组已在游戏内本地拖入实机测试，未出现启动崩溃或报错"
+          required: true
+        - label: "本模组不包含任何侵权、恶意破坏、非法外挂或网络攻击代码"
+          required: true

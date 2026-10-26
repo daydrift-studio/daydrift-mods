@@ -1,0 +1,39 @@
+name: "🔄 模组版本更新申请 (Mod Update)"
+description: "为您已上架的《度日：Daydrift》模组发布新版本"
+title: "[Mod 更新] <模组名称> v<新版本号>"
+labels: ["mod-update"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        为保障社区模组安全，**建议原作者在原投稿 Issue 下直接跟帖回复更新**。
+        如需另开新工单，请务必保证提交者为原作者本人。
+  - type: input
+    id: mod_id
+    attributes:
+      label: "已上架的模组 ID"
+      placeholder: "cozy_cat"
+    validations:
+      required: true
+  - type: input
+    id: new_version
+    attributes:
+      label: "新版本号 (必须高于旧版本)"
+      placeholder: "1.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: changelog
+    attributes:
+      label: "本次更新日志 (Changelog)"
+      placeholder: "- 修复了雨天偶发的对话逻辑错误\n- 新增了 2 种小点心互动..."
+    validations:
+      required: true
+  - type: textarea
+    id: package_source
+    attributes:
+      label: "新版模组 .zip 附件或下载直链"
+      description: "请直接将新版 .zip 附件拖拽至此处"
+      placeholder: "将新版 .zip 附件拖入此处..."
+    validations:
+      required: true
