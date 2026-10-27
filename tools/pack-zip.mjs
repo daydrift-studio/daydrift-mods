@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import zlib from "node:zlib";
 import crypto from "node:crypto";
-import { normalizeRelPath } from "./lib/signing.mjs";
+import { normalizeRelPath, isTextFile } from "./lib/signing.mjs";
 
 const DOS_TIME = 0x0000; // 00:00:00
 const DOS_DATE = 0x0021; // 1980-01-01
@@ -66,7 +66,10 @@ export function packDeterministicZip(modDir, outZipPath) {
   let currentOffset = 0;
 
   for (const entry of entries) {
-    const fileData = fs.readFileSync(entry.fullPath);
+    let fileData = fs.readFileSync(entry.fullPath);
+    if (isTextFile(entry.entryName) && fileData.includes(0x0d)) {
+      fileData = Buffer.from(fileData.toString("utf-8").replace(/\r\n/g, "\n"), "utf-8");
+    }
     const uncompressedSize = fileData.length;
     const crc = zlib.crc32(fileData);
 

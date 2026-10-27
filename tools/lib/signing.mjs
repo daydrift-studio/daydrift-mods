@@ -5,6 +5,18 @@ import path from "node:path";
 export const MAX_FILES = 4000;
 export const MAX_TOTAL_BYTES = 128 * 1024 * 1024; // 128 MiB
 
+const TEXT_EXTS = new Set([
+  ".json", ".gd", ".md", ".txt", ".lua", ".cfg", ".ini",
+  ".csv", ".xml", ".yml", ".yaml", ".tscn", ".tres", ".shader"
+]);
+
+export function isTextFile(relPath) {
+  const base = path.basename(relPath).toLowerCase();
+  if (base === "license" || base === "readme" || base === "notice") return true;
+  const ext = path.extname(relPath).toLowerCase();
+  return TEXT_EXTS.has(ext);
+}
+
 const MOD_ID_REGEX = /^[a-z0-9][a-z0-9_-]{0,63}$/;
 const MOD_VERSION_REGEX = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 const KEY_ID_REGEX = /^[a-z0-9][a-z0-9.-]{0,63}$/;
@@ -101,13 +113,17 @@ export function collectSignedFiles(modDir) {
           throw err;
         }
 
-        const buf = fs.readFileSync(fullPath);
+        let buf = fs.readFileSync(fullPath);
+        if (isTextFile(relPath) && buf.includes(0x0d)) {
+          // Normalize CRLF -> LF for cross-platform deterministic signing
+          buf = Buffer.from(buf.toString("utf-8").replace(/\r\n/g, "\n"), "utf-8");
+        }
         const sha256 = crypto.createHash("sha256").update(buf).digest("hex");
 
         collected.push({
           relPath,
           sha256,
-          size: stat.size,
+          size: buf.length,
           absPath: fullPath
         });
       }

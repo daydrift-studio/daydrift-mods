@@ -1,7 +1,7 @@
 {
   "format": "daydrift-mod-index",
   "version": 1,
-  "generatedAt": "2026-10-26T06:05:20.314Z",
+  "generatedAt": "2026-10-27T05:02:28.712Z",
   "mods": [
     {
       "id": "example_rainy_coffee",
@@ -12,9 +12,9 @@
       "origin": "official",
       "channel": "release",
       "path": "mods/official/example_rainy_coffee",
-      "digest": "sha256:8059cb6ab2777e424002783dd27fc6b3d316c759c1db2c3f83263055c6b2d2be",
+      "digest": "sha256:e5ad468d13a344605cee69e29a70e68e8770a4f06ad6fd7bbe416e179771d821",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-26T06:05:20.310Z",
+      "signedAt": "2026-10-27T05:02:28.706Z",
       "preview": "previews/example_rainy_coffee-1.0.0.webp",
       "permissions": [
         "narrative.choice",
@@ -26,9 +26,9 @@
         "minVersionCode": 4,
         "maxVersionCode": null
       },
-      "size": 3565,
+      "size": 3558,
       "download": "downloads/example_rainy_coffee-1.0.0.zip",
-      "sha256": "sha256:b82e39659d4fc570bd2b0f919da6cc1a5d3bfc6625e69fa4845b83ba1f11fc13",
+      "sha256": "sha256:b6f2280af3900d1a3413c3328471431ebf5edbe2e6089695658f93ff554ffb41",
       "source": "https://github.com/daydrift-studio/daydrift-mod-sdk/tree/main/templates/example_rainy_coffee",
       "sourceCommit": null,
       "owners": [
