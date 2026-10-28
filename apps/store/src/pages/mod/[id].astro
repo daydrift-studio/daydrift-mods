@@ -14,6 +14,8 @@ export async function getStaticPaths() {
 }
 
 const { mod } = Astro.props;
+const downloadFullUrl = `https://daydrift-mods.blym.top/${mod.download}`;
+const deepLinkUrl = `daydrift://mod/install?id=${encodeURIComponent(mod.id)}&name=${encodeURIComponent(mod.name)}&version=${encodeURIComponent(mod.version)}&url=${encodeURIComponent(downloadFullUrl)}`;
 
 // Vocabulary for permissions
 const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> = {
@@ -103,9 +105,10 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
         <div class="info-block">
           <h2 class="block-title">客户端安装与加载步骤</h2>
           <ol class="install-steps">
-            <li>下载下方的确定性分发压缩包 <code>{mod.id}-{mod.version}.zip</code>；</li>
-            <li>在游戏主菜单点击「模组管理」→「打开模组目录」（或解压至游戏数据目录 <code>user://mods/{mod.id}/</code>）；</li>
-            <li>重新进入游戏，在模组列表中勾选启用。启动时沙箱将自动验证 Ed25519 签名有效性。</li>
+            <li><strong>一键安装（推荐）</strong>：点击右侧「⚡ 一键安装到游戏」，在弹出的系统对话框中确认即可由游戏自动下载、校验签名并激活生效；</li>
+            <li><strong>手动安装（离线）</strong>：下载下方确定性分发压缩包 <code>{mod.id}-{mod.version}.zip</code>；</li>
+            <li>在游戏主菜单点击「模组管理」→「导入模组」（或直接解压至游戏数据目录 <code>user://mods/{mod.id}/</code>）；</li>
+            <li>重新进入游戏或点击「热重载」，启动时沙箱将自动验证 Ed25519 签名有效性与沙盒权限。</li>
           </ol>
         </div>
       </div>
@@ -113,15 +116,31 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
       <!-- Right: Download card & verification info -->
       <div class="detail-sidebar">
         <div class="card download-card">
-          <div class="card-title">分发包下载</div>
+          <div class="card-title">模组安装与分发</div>
           <div class="file-stat">
             <span class="file-name">{mod.id}-{mod.version}.zip</span>
             <span class="file-size">{Math.round(mod.size / 1024)} KiB</span>
           </div>
 
-          <a href={`/${mod.download}`} class="btn btn-primary btn-block" download>
-            下载此模组 (ZIP)
+          <a
+            href={deepLinkUrl}
+            class="btn btn-primary btn-block btn-deeplink"
+            id="btn-deeplink-install"
+            title="通过 daydrift:// 协议一键唤醒本地游戏并安装"
+          >
+            ⚡ 一键安装到游戏
           </a>
+
+          <a href={`/${mod.download}`} class="btn btn-secondary btn-block" download>
+            下载分发包 (ZIP)
+          </a>
+
+          <div class="deeplink-hint" id="deeplink-hint">
+            <span class="hint-icon">💡</span>
+            <span class="hint-text">
+              点击“一键安装”将通过 <code>daydrift://</code> 协议直接唤醒《度日》游戏客户端并自动完成拉取与验签。若点击未响应，请先启动游戏或使用 ZIP 手动导入。
+            </span>
+          </div>
 
           <div class="sha-box">
             <div class="sha-label">ZIP SHA-256 校验和：</div>
@@ -369,7 +388,46 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
 
   .btn-block {
     width: 100%;
+    margin-bottom: 0.75rem;
+  }
+
+  .btn-deeplink {
+    background: linear-gradient(135deg, #e6a23c, #cf851b);
+    color: #12141a !important;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(230, 162, 60, 0.25);
+    border: none;
+  }
+
+  .btn-deeplink:hover {
+    background: linear-gradient(135deg, #f0b04f, #dc9226);
+    box-shadow: 0 6px 18px rgba(230, 162, 60, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .deeplink-hint {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    line-height: 1.45;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.6rem 0.75rem;
+    border-radius: 4px;
+    border: 1px dashed var(--border-subtle);
     margin-bottom: 1.25rem;
+    transition: all 0.2s ease;
+  }
+
+  .deeplink-hint.hint-active {
+    border-color: var(--accent-amber);
+    background: rgba(230, 162, 60, 0.08);
+    color: var(--text-muted);
+  }
+
+  .hint-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
   }
 
   .sha-box {
@@ -424,3 +482,18 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
     line-height: 1.5;
   }
 </style>
+
+<script>
+  function setupDeeplink() {
+    const btn = document.getElementById("btn-deeplink-install");
+    const hint = document.getElementById("deeplink-hint");
+    if (!btn || !hint) return;
+
+    btn.addEventListener("click", () => {
+      hint.classList.add("hint-active");
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", setupDeeplink);
+  document.addEventListener("astro:page-load", setupDeeplink);
+</script>

@@ -87,8 +87,15 @@ const mods = catalog.mods || [];
                 <a href={`/mod/${mod.id}`} class="btn btn-secondary">
                   技术详情
                 </a>
-                <a href={`/${mod.download}`} class="btn btn-primary" download>
-                  下载 ZIP
+                <a
+                  href={`daydrift://mod/install?id=${encodeURIComponent(mod.id)}&name=${encodeURIComponent(mod.name)}&version=${encodeURIComponent(mod.version)}&url=${encodeURIComponent(`https://daydrift-mods.blym.top/${mod.download}`)}`}
+                  class="btn btn-primary btn-quick-install"
+                  title="通过 daydrift:// 协议一键唤醒本地游戏并安装"
+                >
+                  ⚡ 一键安装
+                </a>
+                <a href={`/${mod.download}`} class="btn btn-subtle" download title="下载分发包 ZIP">
+                  ZIP
                 </a>
               </div>
             </div>
@@ -304,5 +311,31 @@ const mods = catalog.mods || [];
   .mod-card-actions .btn {
     flex: 1;
     font-size: 0.85rem;
+  }
+
+  .btn-quick-install {
+    background: linear-gradient(135deg, #e6a23c, #cf851b);
+    color: #12141a !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(230, 162, 60, 0.2);
+  }
+
+  .btn-quick-install:hover {
+    background: linear-gradient(135deg, #f0b04f, #dc9226);
+    box-shadow: 0 4px 12px rgba(230, 162, 60, 0.35);
+    transform: translateY(-2px);
+  }
+
+  .btn-subtle {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+    padding: 0.4rem 0.6rem;
+    flex: 0 0 auto !important;
+  }
+
+  .btn-subtle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
   }
 </style>
