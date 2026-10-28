@@ -1,0 +1,23 @@
+{
+  "$schema": "https://daydrift-docs.blym.top/schemas/manifest.schema.json",
+  "id": "tier1_data_pack",
+  "name": "午后暖茶时光 (Tier 1 纯数据模组)",
+  "version": "1.0.0",
+  "author": "Daydrift Studio",
+  "description": "Tier 1 纯数据模组官方示范：完全零代码，通过规范的 JSON 叙事切片、时段触发条件、多分支选项与多语言 CSV 对照表，为游戏无缝追加日常生活切片。",
+  "tier": 1,
+  "type": "data",
+  "entry": "narrative/slice_afternoon.json",
+  "priority": 10,
+  "net_sync_mode": "client_only",
+  "preview": "preview.webp",
+  "license": "CC-BY-4.0",
+  "homepage": "https://daydrift-docs.blym.top/modding/tier1-data",
+  "tags": [
+    "Tier1",
+    "纯数据",
+    "零代码",
+    "生活切片",
+    "叙事"
+  ]
+}

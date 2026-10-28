@@ -1,7 +1,7 @@
 {
   "format": "daydrift-mod-catalog",
   "version": 1,
-  "generatedAt": "2026-10-28T05:24:15.345Z",
+  "generatedAt": "2026-10-28T05:39:46.978Z",
   "site": "https://daydrift-mods.blym.top",
   "mods": [
     {
@@ -26,11 +26,97 @@
       },
       "digest": "sha256:0297a6d6839fb32918e312f4a3156bf9e8305c105b5e8134ee8010b9f3da7fda",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-28T05:24:15.345Z",
+      "signedAt": "2026-10-28T05:39:46.837Z",
       "size": 11168,
       "sha256": "sha256:2d0c7915134782eed5d033ccedf690cd4b33f1ec6598e048ffbccb12ee2ea94d",
       "downloadUrl": "https://daydrift-mods.blym.top/downloads/example_rainy_coffee-1.0.0.zip",
       "previewUrl": "https://daydrift-mods.blym.top/previews/example_rainy_coffee-1.0.0.webp",
+      "source": null,
+      "sourceCommit": null,
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tier1_data_pack",
+      "name": "午后暖茶时光 (Tier 1 纯数据模组)",
+      "version": "1.0.0",
+      "author": "Daydrift Studio",
+      "description": "Tier 1 纯数据模组官方示范：完全零代码，通过规范的 JSON 叙事切片、时段触发条件、多分支选项与多语言 CSV 对照表，为游戏无缝追加日常生活切片。",
+      "origin": "official",
+      "channel": "release",
+      "type": "data",
+      "netSyncMode": "client_only",
+      "permissions": [],
+      "compatibility": {
+        "minVersionCode": 0,
+        "maxVersionCode": null
+      },
+      "digest": "sha256:9fe1717efad14eaee72b75de7e26c97a0e88225cd5576008e065936ffe43d046",
+      "keyId": "official-offline-v1",
+      "signedAt": "2026-10-28T05:39:46.880Z",
+      "size": 5606,
+      "sha256": "sha256:cab33b72c918ee55f248be03db87ffd71bd6abcbe3afc821e106ecce0f8924fb",
+      "downloadUrl": "https://daydrift-mods.blym.top/downloads/tier1_data_pack-1.0.0.zip",
+      "previewUrl": "https://daydrift-mods.blym.top/previews/tier1_data_pack-1.0.0.webp",
+      "source": null,
+      "sourceCommit": null,
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tier2_script_pack",
+      "name": "微风气象站 (Tier 2 双端脚本模组)",
+      "version": "1.0.0",
+      "author": "Daydrift Studio",
+      "description": "Tier 2 双端脚本模组官方示范：演示受控 Lua 5.1 沙盒环境，利用客户端 ModAPI 注入交互与监听时钟、利用服务端 ServerAPI 管理公共黑板并向全房间广播自定义网络报文。",
+      "origin": "official",
+      "channel": "release",
+      "type": "lua",
+      "netSyncMode": "two_way",
+      "permissions": [
+        "narrative.choice",
+        "world.flag",
+        "network_packet"
+      ],
+      "compatibility": {
+        "minVersionCode": 0,
+        "maxVersionCode": null
+      },
+      "digest": "sha256:10b3ae499ca27a0d3b7d707fd5a80230ba543cf8ef9f2fd69ab7e9046332bcf5",
+      "keyId": "official-offline-v1",
+      "signedAt": "2026-10-28T05:39:46.922Z",
+      "size": 5976,
+      "sha256": "sha256:464b4c12975d4d743d08ee58b40b6258dab383579add090d17be3ad608d2b3de",
+      "downloadUrl": "https://daydrift-mods.blym.top/downloads/tier2_script_pack-1.0.0.zip",
+      "previewUrl": "https://daydrift-mods.blym.top/previews/tier2_script_pack-1.0.0.webp",
+      "source": null,
+      "sourceCommit": null,
+      "license": "CC-BY-4.0"
+    },
+    {
+      "id": "tier3_native_pck",
+      "name": "原生扩展领域 (Tier 3 原生 PCK 模组)",
+      "version": "1.0.0",
+      "author": "Daydrift Studio",
+      "description": "Tier 3 原生模组官方示范：继承 DaydriftNativeMod，拥有 100% 游戏原生代码等价支配力，直达核心单例、生命周期拦截、动态生成物理房间门、挂载 HUD 控件并具备自动零残留回滚保护。",
+      "origin": "official",
+      "channel": "release",
+      "type": "native",
+      "netSyncMode": "client_only",
+      "permissions": [
+        "scene_tampering",
+        "ui_mounting",
+        "network_packet"
+      ],
+      "compatibility": {
+        "minVersionCode": 0,
+        "maxVersionCode": null
+      },
+      "digest": "sha256:a44d3f8640b0257a9df458f14ebfea6aea6f0dee915167d196f7014f2ec29cae",
+      "keyId": "official-offline-v1",
+      "signedAt": "2026-10-28T05:39:46.960Z",
+      "size": 5676,
+      "sha256": "sha256:82e4be8dc216452a8c1d1c82cf6eed63b23cee097d051eb357d2a750b9ba4638",
+      "downloadUrl": "https://daydrift-mods.blym.top/downloads/tier3_native_pck-1.0.0.zip",
+      "previewUrl": "https://daydrift-mods.blym.top/previews/tier3_native_pck-1.0.0.webp",
       "source": null,
       "sourceCommit": null,
       "license": "CC-BY-4.0"

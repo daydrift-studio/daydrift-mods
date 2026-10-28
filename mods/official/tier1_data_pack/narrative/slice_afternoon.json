@@ -1,0 +1,68 @@
+{
+  "$schema": "https://daydrift-docs.blym.top/schemas/slice.schema.json",
+  "id": "afternoon_tea_break",
+  "title": "午后暖茶时光",
+  "trigger": {
+    "period": [1],
+    "min_day": 1,
+    "chance": 1.0,
+    "conditions": {}
+  },
+  "interactions": {
+    "kettle": [
+      {
+        "id": "brew_afternoon_tea",
+        "text": "MOD_TEA_BREW_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_TEA_LINE_1",
+            "MOD_TEA_LINE_2"
+          ],
+          "set_flag": {
+            "had_afternoon_tea": true
+          }
+        }
+      }
+    ],
+    "bedroom_window": [
+      {
+        "id": "look_outside_afternoon",
+        "text": "MOD_TEA_WINDOW_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_TEA_WINDOW_LINE_1"
+          ],
+          "set_flag": {
+            "looked_outside": true
+          }
+        }
+      }
+    ]
+  },
+  "dialogues": [
+    {
+      "speaker": "MOD_SPEAKER_ME",
+      "text": "MOD_TEA_INTRO_LINE",
+      "choices": [
+        {
+          "id": "pour_tea",
+          "text": "MOD_TEA_CHOICE_POUR",
+          "set_flag": "had_afternoon_tea"
+        },
+        {
+          "id": "look_outside",
+          "text": "MOD_TEA_CHOICE_WINDOW",
+          "set_flag": "looked_outside"
+        }
+      ]
+    }
+  ],
+  "effects": {
+    "set_flags": {
+      "cozy_slice_experienced": true
+    },
+    "advance_period": false
+  }
+}

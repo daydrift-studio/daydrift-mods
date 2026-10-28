@@ -1,0 +1,10 @@
+{
+  "format": "daydrift-signature",
+  "version": 1,
+  "modId": "tier1_data_pack",
+  "modVersion": "1.0.0",
+  "digest": "sha256:9fe1717efad14eaee72b75de7e26c97a0e88225cd5576008e065936ffe43d046",
+  "keyId": "official-offline-v1",
+  "signedAt": "2026-10-28T05:39:14.226Z",
+  "signature": "ChTBjWaGNj3iry+dy83KNZPTfXjHqcGI0Q5Br66k8Wu69hEDlQPG4EnHZHhfOO0iEtCNsZ7ga+t7ov87NwehCA=="
+}

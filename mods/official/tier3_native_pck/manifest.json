@@ -1,0 +1,28 @@
+{
+  "$schema": "https://daydrift-docs.blym.top/schemas/manifest.schema.json",
+  "id": "tier3_native_pck",
+  "name": "原生扩展领域 (Tier 3 原生 PCK 模组)",
+  "version": "1.0.0",
+  "author": "Daydrift Studio",
+  "description": "Tier 3 原生模组官方示范：继承 DaydriftNativeMod，拥有 100% 游戏原生代码等价支配力，直达核心单例、生命周期拦截、动态生成物理房间门、挂载 HUD 控件并具备自动零残留回滚保护。",
+  "tier": 3,
+  "type": "native",
+  "entry": "entry.gd",
+  "priority": 50,
+  "preview": "preview.webp",
+  "license": "CC-BY-4.0",
+  "homepage": "https://daydrift-docs.blym.top/modding/tier3-native",
+  "permissions": [
+    "scene_tampering",
+    "ui_mounting",
+    "network_packet"
+  ],
+  "tags": [
+    "Tier3",
+    "原生PCK",
+    "GDScript",
+    "物理木门",
+    "UI注入",
+    "100%原生控制"
+  ]
+}

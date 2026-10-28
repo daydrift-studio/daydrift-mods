@@ -1,0 +1,28 @@
+{
+  "$schema": "https://daydrift-docs.blym.top/schemas/manifest.schema.json",
+  "id": "tier2_script_pack",
+  "name": "微风气象站 (Tier 2 双端脚本模组)",
+  "version": "1.0.0",
+  "author": "Daydrift Studio",
+  "description": "Tier 2 双端脚本模组官方示范：演示受控 Lua 5.1 沙盒环境，利用客户端 ModAPI 注入交互与监听时钟、利用服务端 ServerAPI 管理公共黑板并向全房间广播自定义网络报文。",
+  "tier": 2,
+  "type": "lua",
+  "entry": "scripts/main.lua",
+  "priority": 20,
+  "net_sync_mode": "two_way",
+  "preview": "preview.webp",
+  "license": "CC-BY-4.0",
+  "homepage": "https://daydrift-docs.blym.top/modding/tier2-script",
+  "permissions": [
+    "narrative.choice",
+    "world.flag",
+    "network_packet"
+  ],
+  "tags": [
+    "Tier2",
+    "Lua沙盒",
+    "双端联机",
+    "天气",
+    "气象站"
+  ]
+}
