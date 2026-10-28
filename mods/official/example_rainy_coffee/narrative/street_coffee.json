@@ -1,0 +1,47 @@
+{
+  "$schema": "https://daydrift-docs.blym.top/schemas/slice.schema.json",
+  "id": "scene_street_coffee",
+  "title": "场景二：长卷街道长椅与暖黄街灯小憩",
+  "trigger": {
+    "period": [0, 1, 2, 3],
+    "min_day": 1,
+    "chance": 1.0,
+    "conditions": {}
+  },
+  "interactions": {
+    "street_bench": [
+      {
+        "id": "sit_and_sip_coffee",
+        "text": "MOD_COFFEE_BENCH_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_COFFEE_BENCH_LINE_1",
+            "MOD_COFFEE_BENCH_LINE_2"
+          ],
+          "set_flag": {
+            "relaxed_at_street_bench": true
+          }
+        }
+      }
+    ],
+    "street_lamp": [
+      {
+        "id": "watch_lamp_mist",
+        "text": "MOD_COFFEE_LAMP_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_COFFEE_LAMP_LINE_1"
+          ]
+        }
+      }
+    ]
+  },
+  "dialogues": [
+    {
+      "speaker": "MOD_SPEAKER_ME",
+      "text": "MOD_COFFEE_STREET_INTRO"
+    }
+  ]
+}

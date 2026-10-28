@@ -1,0 +1,38 @@
+{
+  "$schema": "https://daydrift-docs.blym.top/schemas/slice.schema.json",
+  "id": "scene_coffee_attic",
+  "title": "场景三：街角推开木门进入秘密阁楼咖啡角",
+  "trigger": {
+    "period": [0, 1, 2, 3],
+    "min_day": 1,
+    "chance": 1.0,
+    "conditions": {
+      "brewed_coffee": true
+    }
+  },
+  "interactions": {
+    "attic_door": [
+      {
+        "id": "enter_secret_attic",
+        "text": "MOD_COFFEE_ATTIC_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_COFFEE_ATTIC_LINE_1",
+            "MOD_COFFEE_ATTIC_LINE_2"
+          ],
+          "set_flag": {
+            "visited_attic": true,
+            "warmth_level": 100
+          }
+        }
+      }
+    ]
+  },
+  "dialogues": [
+    {
+      "speaker": "MOD_SPEAKER_ME",
+      "text": "MOD_COFFEE_ATTIC_INTRO"
+    }
+  ]
+}

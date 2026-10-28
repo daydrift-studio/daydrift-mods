@@ -1,0 +1,65 @@
+{
+  "$schema": "https://daydrift-docs.blym.top/schemas/slice.schema.json",
+  "id": "scene_bedroom_coffee",
+  "title": "场景一：起居卧室手冲咖啡与清晨静听",
+  "trigger": {
+    "period": [0, 1, 2, 3],
+    "min_day": 1,
+    "chance": 1.0,
+    "conditions": {}
+  },
+  "interactions": {
+    "kettle": [
+      {
+        "id": "brew_hand_drip",
+        "text": "MOD_COFFEE_BREW_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_COFFEE_BREW_LINE_1",
+            "MOD_COFFEE_BREW_LINE_2"
+          ],
+          "set_flag": {
+            "brewed_coffee": true
+          },
+          "set_mod_data": {
+            "coffee_count": 1
+          }
+        }
+      }
+    ],
+    "desk": [
+      {
+        "id": "write_coffee_journal",
+        "text": "MOD_COFFEE_DESK_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_COFFEE_DESK_LINE_1"
+          ],
+          "set_flag": {
+            "wrote_morning_journal": true
+          }
+        }
+      }
+    ],
+    "bedroom_window": [
+      {
+        "id": "watch_rain_bedroom",
+        "text": "MOD_COFFEE_WINDOW_PROMPT",
+        "dialogue": {
+          "speaker": "MOD_SPEAKER_ME",
+          "lines": [
+            "MOD_COFFEE_WINDOW_LINE_1"
+          ]
+        }
+      }
+    ]
+  },
+  "dialogues": [
+    {
+      "speaker": "MOD_SPEAKER_ME",
+      "text": "MOD_COFFEE_BEDROOM_INTRO"
+    }
+  ]
+}

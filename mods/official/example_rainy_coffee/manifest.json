@@ -1,27 +1,30 @@
 {
+  "$schema": "https://daydrift-docs.blym.top/schemas/manifest.schema.json",
   "id": "example_rainy_coffee",
-  "name": "手冲挂耳咖啡",
+  "name": "雨天手冲咖啡馆与街角漫步",
   "version": "1.0.0",
-  "author": "Daydrift Team",
-  "description": "在卧室水壶处增加冲泡热咖啡的生活互动选项，为清晨与深夜增添一丝醇香。",
-  "type": "data",
-  "priority": 10,
-  "net_sync_mode": "client_only",
+  "author": "Daydrift Studio",
+  "description": "官方示范模组：完整覆盖起居卧室、连绵街道与秘密阁楼三大场景，包含手冲挂耳咖啡、长椅品读、秘密实体木门、四时时钟流转与联机同游寄语广播。",
+  "tier": 2,
+  "type": "lua",
+  "entry": "scripts/main.lua",
+  "priority": 100,
+  "net_sync_mode": "two_way",
   "preview": "preview.webp",
+  "license": "CC-BY-4.0",
+  "homepage": "https://daydrift-docs.blym.top/modding/overview",
   "permissions": [
     "narrative.choice",
-    "world.flag"
+    "world.flag",
+    "network_packet",
+    "scene_tampering"
   ],
-  "compatibility": {
-    "minVersionCode": 4,
-    "maxVersionCode": null
-  },
-  "license": "CC-BY-4.0",
-  "source": "https://github.com/daydrift-studio/daydrift-mod-sdk/tree/main/templates/example_rainy_coffee",
-  "homepage": "https://daydrift-docs.blym.top/modding/overview",
   "tags": [
-    "生活",
-    "互动",
+    "起居室",
+    "街道长卷",
+    "阁楼空间",
+    "生活切片",
+    "联机同游",
     "咖啡"
   ]
 }

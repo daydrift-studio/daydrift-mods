@@ -1,35 +1,37 @@
 {
   "format": "daydrift-mod-index",
   "version": 1,
-  "generatedAt": "2026-10-27T05:02:28.712Z",
+  "generatedAt": "2026-10-28T05:24:15.345Z",
   "mods": [
     {
       "id": "example_rainy_coffee",
-      "name": "手冲挂耳咖啡",
+      "name": "雨天手冲咖啡馆与街角漫步",
       "version": "1.0.0",
-      "author": "Daydrift Team",
-      "description": "在卧室水壶处增加冲泡热咖啡的生活互动选项，为清晨与深夜增添一丝醇香。",
+      "author": "Daydrift Studio",
+      "description": "官方示范模组：完整覆盖起居卧室、连绵街道与秘密阁楼三大场景，包含手冲挂耳咖啡、长椅品读、秘密实体木门、四时时钟流转与联机同游寄语广播。",
       "origin": "official",
       "channel": "release",
       "path": "mods/official/example_rainy_coffee",
-      "digest": "sha256:e5ad468d13a344605cee69e29a70e68e8770a4f06ad6fd7bbe416e179771d821",
+      "digest": "sha256:0297a6d6839fb32918e312f4a3156bf9e8305c105b5e8134ee8010b9f3da7fda",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-27T05:02:28.706Z",
+      "signedAt": "2026-10-28T05:24:15.340Z",
       "preview": "previews/example_rainy_coffee-1.0.0.webp",
       "permissions": [
         "narrative.choice",
-        "world.flag"
+        "world.flag",
+        "network_packet",
+        "scene_tampering"
       ],
-      "type": "data",
-      "netSyncMode": "client_only",
+      "type": "lua",
+      "netSyncMode": "two_way",
       "compatibility": {
-        "minVersionCode": 4,
+        "minVersionCode": 0,
         "maxVersionCode": null
       },
-      "size": 3558,
+      "size": 11168,
       "download": "downloads/example_rainy_coffee-1.0.0.zip",
-      "sha256": "sha256:b6f2280af3900d1a3413c3328471431ebf5edbe2e6089695658f93ff554ffb41",
-      "source": "https://github.com/daydrift-studio/daydrift-mod-sdk/tree/main/templates/example_rainy_coffee",
+      "sha256": "sha256:2d0c7915134782eed5d033ccedf690cd4b33f1ec6598e048ffbccb12ee2ea94d",
+      "source": null,
       "sourceCommit": null,
       "owners": [
         "daydrift-studio"
