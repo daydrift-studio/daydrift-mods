@@ -14,6 +14,8 @@ build/
 temp/
 tmp/
 *.zip
+!downloads/*.zip
+!apps/store/public/downloads/*.zip
 
 # System artifacts
 .DS_Store

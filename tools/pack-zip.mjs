@@ -28,7 +28,7 @@ export function packDeterministicZip(modDir, outZipPath) {
       const rawRel = path.relative(absModDir, fullPath);
       const relPath = normalizeRelPath(rawRel);
 
-      if (item.name === ".git" || item.name === ".github" || item.name === "node_modules") {
+      if (item.name === ".git" || item.name === ".github" || item.name === "node_modules" || item.name === ".vscode" || item.name === ".idea") {
         continue;
       }
       if (item.name === ".DS_Store" || item.name === "Thumbs.db" || item.name === "desktop.ini") {

@@ -3,8 +3,8 @@
   "version": 1,
   "modId": "tier3_native_pck",
   "modVersion": "1.0.0",
-  "digest": "sha256:a44d3f8640b0257a9df458f14ebfea6aea6f0dee915167d196f7014f2ec29cae",
+  "digest": "sha256:e2343ecf30a71d625d3baa00db10bff957709391ace4c6d7fb2988c159054e96",
   "keyId": "official-offline-v1",
-  "signedAt": "2026-10-28T05:39:14.903Z",
-  "signature": "6ZEF45fxZ2TVR+kP/l1MDOO2W2T6O+3kfyAGt1Pbwia4lsafDltTU1DJPSS9oQ6n9MsKMfAgZJpOZSAhscFyCg=="
+  "signedAt": "2026-10-29T05:19:25.156Z",
+  "signature": "43wr0CztUylb2wGCrx76p14xA1k/nWCS6d5ESECssA/R2uVJtMKy6hNqFOT4cbdyoteyQDLzECmUQXntTkZDCg=="
 }

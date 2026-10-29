@@ -7,7 +7,7 @@ export const MAX_TOTAL_BYTES = 128 * 1024 * 1024; // 128 MiB
 
 const TEXT_EXTS = new Set([
   ".json", ".gd", ".md", ".txt", ".lua", ".cfg", ".ini",
-  ".csv", ".xml", ".yml", ".yaml", ".tscn", ".tres", ".shader"
+  ".csv", ".xml", ".yml", ".yaml", ".tscn", ".tres", ".shader", ".uid"
 ]);
 
 export function isTextFile(relPath) {
@@ -74,9 +74,12 @@ export function collectSignedFiles(modDir) {
           continue;
         }
 
-        // Exclude system files in any directory
+        // Exclude system files and IDE metadata in any directory
         const basename = path.basename(relPath);
         if (basename === ".DS_Store" || basename === "Thumbs.db" || basename === "desktop.ini") {
+          continue;
+        }
+        if (relPath.startsWith(".vscode/") || relPath.startsWith(".idea/") || relPath.includes("/.vscode/") || relPath.includes("/.idea/")) {
           continue;
         }
 

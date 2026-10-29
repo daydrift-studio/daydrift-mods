@@ -3,8 +3,8 @@
   "version": 1,
   "modId": "tier2_script_pack",
   "modVersion": "1.0.0",
-  "digest": "sha256:10b3ae499ca27a0d3b7d707fd5a80230ba543cf8ef9f2fd69ab7e9046332bcf5",
+  "digest": "sha256:374e00d199c762e71842af1122e54cc797cfcf5f274bfbc57fbe173935aa77bd",
   "keyId": "official-offline-v1",
-  "signedAt": "2026-10-28T05:39:14.551Z",
-  "signature": "/ZwpqWrZA7umJKPNXuFT8gzQJ2sNt0LpIeSoQ9hNh9a6b0HORuIGv3D1wabGqFS2srPNnql1wlf/2SQsA77OBw=="
+  "signedAt": "2026-10-29T05:19:24.948Z",
+  "signature": "8fVVJXqGNwIjN4rm7rfqVg/lgllOX3aifrMryNzGgNMizwtdoO1FxyVrXAM8MRA3lSlaBKYvufOEGvhMNHiSDw=="
 }

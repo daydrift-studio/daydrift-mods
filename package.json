@@ -11,7 +11,7 @@
     "pack": "node tools/pack-zip.mjs",
     "mod:import": "node tools/import-submission.mjs",
     "should-build": "node tools/should-build.mjs",
-    "build:store": "node tools/build-index.mjs && pnpm --filter @daydrift/store build && node tools/sync-dist.mjs",
+    "build:store": "node tools/build-index.mjs --strict && pnpm --filter @daydrift/store build && node tools/sync-dist.mjs",
     "build": "pnpm run build:store",
     "test:signing": "node --test test/signing.test.mjs",
     "test:zip": "node --test test/zip.test.mjs",
