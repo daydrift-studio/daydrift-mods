@@ -1,7 +1,7 @@
 {
   "format": "daydrift-mod-index",
   "version": 1,
-  "generatedAt": "2026-10-29T05:54:02.200Z",
+  "generatedAt": "2026-10-30T05:50:09.699Z",
   "mods": [
     {
       "id": "example_rainy_coffee",
@@ -14,7 +14,7 @@
       "path": "mods/official/example_rainy_coffee",
       "digest": "sha256:0297a6d6839fb32918e312f4a3156bf9e8305c105b5e8134ee8010b9f3da7fda",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-29T05:54:02.096Z",
+      "signedAt": "2026-10-30T05:50:09.587Z",
       "preview": "previews/example_rainy_coffee-1.0.0.webp",
       "permissions": [
         "narrative.choice",
@@ -49,7 +49,7 @@
       "path": "mods/official/tier1_data_pack",
       "digest": "sha256:ea99e3b4ab89e1385969d86d8064845ea9861619b813c61548cd47ffc50b16c0",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-29T05:54:02.133Z",
+      "signedAt": "2026-10-30T05:50:09.623Z",
       "preview": "previews/tier1_data_pack-1.0.0.webp",
       "permissions": [],
       "type": "data",
@@ -79,7 +79,7 @@
       "path": "mods/official/tier2_script_pack",
       "digest": "sha256:374e00d199c762e71842af1122e54cc797cfcf5f274bfbc57fbe173935aa77bd",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-29T05:54:02.160Z",
+      "signedAt": "2026-10-30T05:50:09.656Z",
       "preview": "previews/tier2_script_pack-1.0.0.webp",
       "permissions": [
         "narrative.choice",
@@ -113,7 +113,7 @@
       "path": "mods/official/tier3_native_pck",
       "digest": "sha256:667baf23aeb99711d4d517b1dc108be00d495ab9cf963f18af2d3593aa4d9b1a",
       "keyId": "official-offline-v1",
-      "signedAt": "2026-10-29T05:54:02.187Z",
+      "signedAt": "2026-10-30T05:50:09.688Z",
       "preview": "previews/tier3_native_pck-1.0.0.webp",
       "permissions": [
         "scene_tampering",

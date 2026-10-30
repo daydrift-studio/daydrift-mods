@@ -1,4 +1,7 @@
 ---
+import { ClientRouter } from "astro:transitions";
+import DeepLinkFallbackModal from "../components/DeepLinkFallbackModal.astro";
+
 interface Props {
   title: string;
   description?: string;
@@ -20,23 +23,25 @@ const {
     <title>{title} | 度日 Mod 商店</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
   </head>
   <body>
     <div id="site-progress-bar" aria-hidden="true"></div>
     <header class="store-header">
       <div class="container header-inner">
-        <a href="/" class="brand-link">
+        <a href="/" class="brand-link" data-astro-prefetch>
           <img src="/icon.svg" alt="Daydrift Icon" class="brand-logo-img" width="24" height="24" />
           <span class="brand-title">度日 MOD 商店</span>
           <span class="brand-sub">STORE</span>
         </a>
 
         <nav class="nav-links">
-          <a href="/" class:list={["nav-item", { active: currentTab === "all" }]}>全部模组</a>
-          <a href="/beta" class:list={["nav-item", { active: currentTab === "beta" }]}>先行测试</a>
-          <a href="/submit" class:list={["nav-item", { active: currentTab === "submit" }]}>投稿指引</a>
-          <a href="/keys" class:list={["nav-item", { active: currentTab === "keys" }]}>公钥透明度</a>
-          <a href="https://daydrift.blym.top" class="nav-item back-link">官网首页</a>
+          <a href="/" class:list={["nav-item", { active: currentTab === "all" }]} data-astro-prefetch>全部模组</a>
+          <a href="/beta" class:list={["nav-item", { active: currentTab === "beta" }]} data-astro-prefetch>先行测试</a>
+          <a href="/submit" class:list={["nav-item", { active: currentTab === "submit" }]} data-astro-prefetch>提审工坊</a>
+          <a href="/keys" class:list={["nav-item", { active: currentTab === "keys" }]} data-astro-prefetch>公钥透明度</a>
+          <a href="https://daydrift-docs.blym.top" class="nav-item subsite-link" target="_blank" rel="noopener">开发文档 ↗</a>
+          <a href="https://daydrift.blym.top" class="nav-item back-link">官网首页 ↗</a>
         </nav>
       </div>
     </header>
@@ -44,6 +49,8 @@ const {
     <main class="store-main">
       <slot />
     </main>
+
+    <DeepLinkFallbackModal />
 
     <footer class="store-footer">
       <div class="container footer-inner">
@@ -230,10 +237,14 @@ const {
     color: var(--accent-amber);
   }
 
-  .back-link {
+  .subsite-link, .back-link {
     border-left: 1px solid var(--border-subtle);
     padding-left: 1.25rem;
     color: var(--text-faint);
+  }
+
+  .subsite-link:hover, .back-link:hover {
+    color: var(--accent-amber);
   }
 
   .store-main {

@@ -2,84 +2,451 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="模组投稿指引" currentTab="submit">
+<Layout title="模组提审工作台 & 在线构造器" currentTab="submit">
   <div class="container">
     <div class="page-header">
-      <div class="header-tag">CREATOR ECOSYSTEM</div>
-      <h1 class="page-title">向《度日：Daydrift》模组商店投稿</h1>
+      <div class="header-tag">CREATOR ECOSYSTEM & STUDIO</div>
+      <h1 class="page-title">《度日：Daydrift》模组提审工坊</h1>
       <p class="page-desc">
-        《度日》致力于构建开放、轻量、安全的生活向模组创作生态。我们欢迎创作者为游戏增添更多温馨的生活切片。
+        提供在线清单生成器、本地模组包静态合规体检工具与 GitHub Issue 自动化审查准入指南，助力创作者快速构建高质量生活切片。
       </p>
     </div>
 
-    <div class="guide-grid">
-      <div class="guide-main">
-        <section class="guide-card">
-          <h2 class="card-heading">1. 投稿核心标准与准入规范</h2>
-          <ul class="checklist">
-            <li>
-              <strong>合法合规与开源协议</strong>：社区模组必须附带清晰的开源协议（如 MIT、CC-BY-4.0 等），并提供可追溯的公共 Git 源码仓库。
-            </li>
-            <li>
-              <strong>严谨的目录结构与清单</strong>：必须在根目录包含符合 Schema 的 <code>manifest.json</code>，声明 <code>id</code>、<code>version</code>（三段式语义化版本，如 <code>1.0.0</code>）、<code>permissions</code>。
-            </li>
-            <li>
-              <strong>安全沙箱纯洁性</strong>：所有游戏能力调用必须通过 <code>ModAPI.*</code> 门面。严禁携带原生动态链接库、可执行文件或尝试逃逸沙箱。
-            </li>
-            <li>
-              <strong>规范的 16:9 预览封面</strong>：必须在模组根目录下提供 <code>preview.webp</code> 或 PNG/JPG（推荐 1280×720，不小于 640×360，≤ 1 MiB）。
-            </li>
-          </ul>
-        </section>
+    <!-- 顶部标签页切换 -->
+    <div class="studio-tab-bar">
+      <button type="button" class="studio-tab active" id="tab-btn-generator">1. 在线 Manifest 构造器</button>
+      <button type="button" class="studio-tab" id="tab-btn-checker">2. 本地 ZIP 静态体检器</button>
+      <button type="button" class="studio-tab" id="tab-btn-guideline">3. 投稿标准与流程</button>
+    </div>
 
-        <section class="guide-card">
-          <h2 class="card-heading">2. GitHub Issue 投稿提交流程</h2>
-          <p class="step-text">我们采用基于 GitHub Issue 的全自动 CI 审查与签名流程：</p>
-          <ol class="step-list">
-            <li>
-              前往 GitHub 仓库 <a href="https://github.com/daydrift-studio/daydrift-mods/issues" target="_blank">daydrift-studio/daydrift-mods/issues</a> 点击 <strong>New Issue</strong>；
-            </li>
-            <li>
-              选择 <strong>[模组提交] Mod Submission</strong> 表单模版；
-            </li>
-            <li>
-              填写您的模组基本信息：源码仓库 URL、Git Commit SHA、申请渠道（<code>release</code> 或 <code>beta</code>）；
-            </li>
-            <li>
-              提交 Issue 后，GitHub Actions 机器人将自动拉取指定 Commit 进行目录与安全预检，并在评论区输出预检结果与文件清单；
-            </li>
-            <li>
-              审查维护者在确认内容无违规后，通过在评论区发送 <code>/sign &lt;commit&gt;</code> 指令触发流水线自动签名并入库上架！
-            </li>
-          </ol>
-        </section>
+    <!-- 板块 1: 在线 Manifest 构造器 -->
+    <div class="studio-panel active" id="panel-generator">
+      <div class="workbench-grid">
+        <div class="card workbench-form-card">
+          <h2 class="card-heading">模组元数据配置</h2>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-id">模组 ID (全局唯一英文)</label>
+              <input type="text" id="form-id" class="input-field" placeholder="cozy_tea" value="cozy_tea" />
+              <span class="field-hint">仅允许小写字母、数字与下划线 (^[a-z0-9_]+$)</span>
+            </div>
+            <div class="form-group">
+              <label for="form-name">显示名称 (中文/多语言)</label>
+              <input type="text" id="form-name" class="input-field" placeholder="温馨茶歇" value="温馨茶歇" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-version">版本号 (SemVer)</label>
+              <input type="text" id="form-version" class="input-field" placeholder="1.0.0" value="1.0.0" />
+            </div>
+            <div class="form-group">
+              <label for="form-author">作者署名</label>
+              <input type="text" id="form-author" class="input-field" placeholder="旅行者" value="旅行者" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-tier">体系类别 (Architecture Tier)</label>
+              <select id="form-tier" class="input-field select-field">
+                <option value="data">Tier 1: 纯数据扩展 (Data Pack - 零代码)</option>
+                <option value="lua" selected>Tier 2: 逻辑沙盒 (Script Pack - Lua 脚本)</option>
+                <option value="native">Tier 3: 原生 PCK 扩展 (Native PCK - Godot 4)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="form-entry">入口文件路径 (Entry File)</label>
+              <input type="text" id="form-entry" class="input-field" placeholder="scripts/main.lua" value="scripts/main.lua" />
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="form-desc">模组简要介绍</label>
+            <textarea id="form-desc" class="input-field textarea-field" rows="2" placeholder="为生活增添一份淡淡的茉莉花香...">为生活增添一份淡淡的茉莉花香，包含起居室水壶新对话分支与疲劳舒缓机制。</textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>声明权限列表 (Permissions)</label>
+            <div class="perms-checkbox-grid">
+              <label class="checkbox-label"><input type="checkbox" value="narrative.say" checked /> <code>narrative.say</code> 对白显示</label>
+              <label class="checkbox-label"><input type="checkbox" value="narrative.choice" checked /> <code>narrative.choice</code> 分支选择</label>
+              <label class="checkbox-label"><input type="checkbox" value="interaction.inject" checked /> <code>interaction.inject</code> 交互物注入</label>
+              <label class="checkbox-label"><input type="checkbox" value="ui.toast" checked /> <code>ui.toast</code> 气泡通知</label>
+              <label class="checkbox-label"><input type="checkbox" value="world.time" /> <code>world.time</code> 时钟感知</label>
+              <label class="checkbox-label"><input type="checkbox" value="world.flag" /> <code>world.flag</code> 状态黑板</label>
+              <label class="checkbox-label"><input type="checkbox" value="storage.mod" /> <code>storage.mod</code> 隔离存储</label>
+              <label class="checkbox-label"><input type="checkbox" value="asset.texture" /> <code>asset.texture</code> 贴图加载</label>
+              <label class="checkbox-label"><input type="checkbox" value="asset.audio" /> <code>asset.audio</code> 音频加载</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card workbench-preview-card">
+          <div class="preview-header">
+            <h2 class="card-heading">manifest.json 实时预览</h2>
+            <div class="preview-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-json">复制 JSON</button>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-download-manifest">下载清单文件</button>
+            </div>
+          </div>
+          <pre class="json-code-box" id="json-preview"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- 板块 2: 本地 ZIP 静态体检器 -->
+    <div class="studio-panel" id="panel-checker">
+      <div class="card drop-zone-card" id="drop-zone">
+        <div class="drop-zone-icon">📦</div>
+        <h3 class="drop-zone-title">拖拽已打包的模组 ZIP 到此处</h3>
+        <p class="drop-zone-desc">纯浏览器本地解析，零文件上传。即刻执行文件安全红线、路径越界、清单格式与大小扫描。</p>
+        <label class="btn btn-primary drop-zone-btn">
+          选择本地 ZIP 文件
+          <input type="file" id="file-input-zip" accept=".zip,.ddmod" style="display: none;" />
+        </label>
       </div>
 
-      <div class="guide-aside">
-        <div class="aside-box">
-          <div class="aside-title">开发工具包与模板</div>
-          <p class="aside-desc">使用官方提供的标准模板快速搭建您的第一个《度日》模组：</p>
-          <a href="https://github.com/daydrift-studio/daydrift-mod-sdk" class="btn btn-primary btn-block" target="_blank">
-            获取 Mod SDK ↗
-          </a>
-          <a href="https://daydrift-docs.blym.top/modding/overview" class="btn btn-secondary btn-block" target="_blank">
-            查阅开发文档 ↗
-          </a>
+      <div class="audit-result-card" id="audit-result-box" style="display: none;">
+        <div class="audit-header">
+          <div class="audit-status-badge" id="audit-badge">AUDIT PENDING</div>
+          <h3 class="audit-title" id="audit-title">体检分析中...</h3>
+        </div>
+        <div class="audit-metrics" id="audit-metrics"></div>
+        <div class="audit-details-list" id="audit-details"></div>
+      </div>
+    </div>
+
+    <!-- 板块 3: 投稿标准与流程 -->
+    <div class="studio-panel" id="panel-guideline">
+      <div class="guide-grid">
+        <div class="guide-main">
+          <section class="guide-card">
+            <h2 class="card-heading">1. 投稿核心标准与准入规范</h2>
+            <ul class="checklist">
+              <li>
+                <strong>严谨的目录结构与清单</strong>：必须在根目录包含符合规范的 <code>manifest.json</code>，声明 <code>id</code>、<code>version</code>（三段式语义化版本，如 <code>1.0.0</code>）、<code>permissions</code>。
+              </li>
+              <li>
+                <strong>绝对安全红线</strong>：严禁携带 <code>.exe</code>、<code>.dll</code>、<code>.so</code>、<code>.bat</code>、<code>.cmd</code>、<code>.ps1</code> 等原生二进制或可执行脚本，严禁任何路径穿越（<code>..</code>）。
+              </li>
+              <li>
+                <strong>规范的 16:9 封面预览图</strong>：建议在模组根目录下提供 <code>preview.webp</code> 或 PNG/JPG（推荐 1280×720，不超过 1 MiB）。
+              </li>
+              <li>
+                <strong>卸载零残留保障</strong>：Tier 3 原生 PCK 模组必须在 <code>_on_mod_disable()</code> 调用基类方法干净释放所有注入节点与信号。
+              </li>
+            </ul>
+          </section>
+
+          <section class="guide-card">
+            <h2 class="card-heading">2. GitHub Issue 投稿提交流程</h2>
+            <ol class="step-list">
+              <li>前往 GitHub 发行仓 <a href="https://github.com/daydrift-studio/daydrift-mods/issues" target="_blank" rel="noopener">daydrift-studio/daydrift-mods/issues</a> 点击 <strong>New Issue</strong>；</li>
+              <li>选择 <strong>[Mod 投稿] Mod Submission</strong> 表单模版；</li>
+              <li>填写模组基本信息，并直接将打包好的 <code>.zip</code> 拖入附件栏，或提供开源仓库 Release 直链；</li>
+              <li>提交后，CI 机器人将自动解压扫描并回复安全预检报告；</li>
+              <li>审核通过后由维护者执行 <code>/sign</code> 指令，自动生成 Ed25519 签名并部署上架！</li>
+            </ol>
+          </section>
+        </div>
+
+        <div class="guide-aside">
+          <div class="aside-box">
+            <div class="aside-title">创作者工具包</div>
+            <p class="aside-desc">通过官方脚手架命令行一键初始化工程与本地调试：</p>
+            <a href="https://github.com/daydrift-studio/daydrift-mod-sdk" class="btn btn-primary btn-block" target="_blank" rel="noopener">
+              获取 Mod SDK ↗
+            </a>
+            <a href="https://daydrift-docs.blym.top/modding/overview" class="btn btn-secondary btn-block" target="_blank" rel="noopener">
+              查阅开发文档 ↗
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </Layout>
 
+<script>
+  function setupStudioInteractivity() {
+    // 1. 标签页切换逻辑
+    const tabs = [
+      { btn: document.getElementById("tab-btn-generator"), panel: document.getElementById("panel-generator") },
+      { btn: document.getElementById("tab-btn-checker"), panel: document.getElementById("panel-checker") },
+      { btn: document.getElementById("tab-btn-guideline"), panel: document.getElementById("panel-guideline") }
+    ];
+
+    tabs.forEach(({ btn, panel }) => {
+      btn?.addEventListener("click", () => {
+        tabs.forEach(t => {
+          t.btn?.classList.remove("active");
+          t.panel?.classList.remove("active");
+        });
+        btn.classList.add("active");
+        panel?.classList.add("active");
+      });
+    });
+
+    // 2. 表单与 JSON 实时生成
+    const idInput = document.getElementById("form-id") as HTMLInputElement;
+    const nameInput = document.getElementById("form-name") as HTMLInputElement;
+    const verInput = document.getElementById("form-version") as HTMLInputElement;
+    const authorInput = document.getElementById("form-author") as HTMLInputElement;
+    const tierSelect = document.getElementById("form-tier") as HTMLSelectElement;
+    const entryInput = document.getElementById("form-entry") as HTMLInputElement;
+    const descInput = document.getElementById("form-desc") as HTMLTextAreaElement;
+    const permsInputs = document.querySelectorAll(".perms-checkbox-grid input[type='checkbox']") as NodeListOf<HTMLInputElement>;
+    const jsonPreview = document.getElementById("json-preview");
+    const copyBtn = document.getElementById("btn-copy-json");
+    const downloadBtn = document.getElementById("btn-download-manifest");
+
+    // 体系切换自动填充默认 entry
+    tierSelect?.addEventListener("change", () => {
+      const t = tierSelect.value;
+      if (t === "data") entryInput.value = "data/slices.json";
+      else if (t === "lua") entryInput.value = "scripts/main.lua";
+      else if (t === "native") entryInput.value = "entry.gd";
+      updateJson();
+    });
+
+    function updateJson(): Record<string, unknown> {
+      const selectedPerms: string[] = [];
+      permsInputs.forEach(cb => {
+        if (cb.checked) selectedPerms.push(cb.value);
+      });
+
+      const tierVal = tierSelect ? tierSelect.value : "lua";
+      const doc: Record<string, unknown> = {
+        id: (idInput?.value || "custom_mod").trim().toLowerCase().replace(/[^a-z0-9_]/g, "_"),
+        name: (nameInput?.value || "我的模组").trim(),
+        version: (verInput?.value || "1.0.0").trim(),
+        author: (authorInput?.value || "创作者").trim(),
+        description: (descInput?.value || "").trim(),
+        type: tierVal,
+        entry: (entryInput?.value || "scripts/main.lua").trim(),
+        preview: "preview.webp",
+        permissions: selectedPerms
+      };
+
+      if (tierVal === "native") {
+        doc.nativePck = `${doc.id}.pck`;
+      }
+
+      if (jsonPreview) {
+        jsonPreview.textContent = JSON.stringify(doc, null, 2);
+      }
+      return doc;
+    }
+
+    [idInput, nameInput, verInput, authorInput, entryInput, descInput].forEach(el => {
+      el?.addEventListener("input", updateJson);
+    });
+    permsInputs.forEach(el => el.addEventListener("change", updateJson));
+    updateJson();
+
+    copyBtn?.addEventListener("click", () => {
+      const doc = updateJson();
+      navigator.clipboard.writeText(JSON.stringify(doc, null, 2)).then(() => {
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = "已复制 ✓";
+        window.setTimeout(() => { copyBtn.textContent = orig; }, 1800);
+      });
+    });
+
+    downloadBtn?.addEventListener("click", () => {
+      const doc = updateJson();
+      const blob = new Blob([JSON.stringify(doc, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "manifest.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    // 3. 本地 ZIP 静态安全审计器 (Zero Dependency In-Browser Zip Central Directory Parser)
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input-zip") as HTMLInputElement;
+    const auditBox = document.getElementById("audit-result-box");
+    const auditBadge = document.getElementById("audit-badge");
+    const auditTitle = document.getElementById("audit-title");
+    const auditMetrics = document.getElementById("audit-metrics");
+    const auditDetails = document.getElementById("audit-details");
+
+    const FORBIDDEN_EXTS = new Set([
+      ".exe", ".dll", ".so", ".dylib", ".bat", ".cmd", ".sh",
+      ".com", ".msi", ".vbs", ".ps1", ".scr", ".pif", ".cpl"
+    ]);
+
+    dropZone?.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+    dropZone?.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+    dropZone?.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+      if (e.dataTransfer?.files?.[0]) {
+        inspectZipFile(e.dataTransfer.files[0]);
+      }
+    });
+    fileInput?.addEventListener("change", () => {
+      if (fileInput.files?.[0]) {
+        inspectZipFile(fileInput.files[0]);
+      }
+    });
+
+    async function inspectZipFile(file: File) {
+      if (!auditBox || !auditBadge || !auditTitle || !auditMetrics || !auditDetails) return;
+      auditBox.style.display = "block";
+      auditBadge.className = "audit-status-badge pending";
+      auditBadge.textContent = "ANALYZING";
+      auditTitle.textContent = `正在扫描分析：${file.name} ...`;
+      auditMetrics.innerHTML = "";
+      auditDetails.innerHTML = "";
+
+      const buf = await file.arrayBuffer();
+      const bytes = new Uint8Array(buf);
+      const view = new DataView(buf);
+
+      // 快速解析 ZIP Central Directory
+      const fileList: Array<{ name: string; size: number }> = [];
+      let foundEOCD = -1;
+
+      // 从尾部搜索 EOCD (0x06054b50)
+      for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
+        if (view.getUint32(i, true) === 0x06054b50) {
+          foundEOCD = i;
+          break;
+        }
+      }
+
+      if (foundEOCD === -1) {
+        auditBadge.className = "audit-status-badge fail";
+        auditBadge.textContent = "INVALID ZIP";
+        auditTitle.textContent = "解析失败：该文件不是合法的 ZIP 压缩包";
+        return;
+      }
+
+      const cdOffset = view.getUint32(foundEOCD + 16, true);
+      const cdEntries = view.getUint16(foundEOCD + 10, true);
+
+      let p = cdOffset;
+      for (let i = 0; i < cdEntries && p < foundEOCD; i++) {
+        if (view.getUint32(p, true) !== 0x02014b50) break;
+        const uncompSize = view.getUint32(p + 24, true);
+        const nameLen = view.getUint16(p + 28, true);
+        const extraLen = view.getUint16(p + 30, true);
+        const commentLen = view.getUint16(p + 32, true);
+
+        const nameBytes = bytes.subarray(p + 46, p + 46 + nameLen);
+        const fn = new TextDecoder("utf-8").decode(nameBytes);
+        fileList.push({ name: fn, size: uncompSize });
+
+        p += 46 + nameLen + extraLen + commentLen;
+      }
+
+      // 执行合规性分析
+      const issues: Array<{ type: "danger" | "warn" | "info"; msg: string }> = [];
+      let totalUncompressed = 0;
+      let hasManifest = false;
+      let forbiddenHits: string[] = [];
+
+      for (const item of fileList) {
+        totalUncompressed += item.size;
+        const lower = item.name.toLowerCase();
+
+        if (lower.endsWith("manifest.json") || lower === "manifest.json") {
+          hasManifest = true;
+        }
+
+        if (item.name.includes("..") || item.name.startsWith("/")) {
+          issues.push({ type: "danger", msg: `非法越界路径：${item.name}` });
+        }
+
+        for (const ext of FORBIDDEN_EXTS) {
+          if (lower.endsWith(ext)) {
+            forbiddenHits.push(item.name);
+          }
+        }
+      }
+
+      if (forbiddenHits.length > 0) {
+        issues.push({ type: "danger", msg: `检测到禁止包含的危险二进制/脚本文件：${forbiddenHits.join(", ")}` });
+      }
+
+      if (!hasManifest) {
+        issues.push({ type: "danger", msg: `压缩包根目录下缺少必需的 manifest.json 清单文件！` });
+      }
+
+      if (fileList.length > 4000) {
+        issues.push({ type: "danger", msg: `文件总数 (${fileList.length}) 超出单包上限 (4000)` });
+      }
+
+      if (totalUncompressed > 128 * 1024 * 1024) {
+        issues.push({ type: "danger", msg: `解压总体积 (${(totalUncompressed / (1024 * 1024)).toFixed(1)} MiB) 超出上限 (128 MiB)` });
+      }
+
+      const hasDanger = issues.some(iss => iss.type === "danger");
+
+      auditBadge.className = `audit-status-badge ${hasDanger ? "fail" : "pass"}`;
+      auditBadge.textContent = hasDanger ? "AUDIT REJECTED" : "AUDIT PASSED";
+      auditTitle.textContent = hasDanger
+        ? "体检不合格：检测到阻断级安全违规"
+        : "体检通过：符合《度日》安全准入与文件规范！";
+
+      auditMetrics.innerHTML = `
+        <div class="metric-item">
+          <div class="m-label">压缩文件大小</div>
+          <div class="m-val">${(file.size / 1024).toFixed(1)} KiB</div>
+        </div>
+        <div class="metric-item">
+          <div class="m-label">解压总体积</div>
+          <div class="m-val">${(totalUncompressed / 1024).toFixed(1)} KiB</div>
+        </div>
+        <div class="metric-item">
+          <div class="m-label">文件总数</div>
+          <div class="m-val">${fileList.length}</div>
+        </div>
+        <div class="metric-item">
+          <div class="m-label">清单文件</div>
+          <div class="m-val" style="color: ${hasManifest ? '#52c41a' : '#ff4d4f'};">${hasManifest ? '存在 ✓' : '缺失 ✗'}</div>
+        </div>
+      `;
+
+      if (issues.length === 0) {
+        auditDetails.innerHTML = `
+          <div class="audit-item success">
+            <span class="aud-icon">✓</span>
+            <span>无任何违禁二进制、无路径越界，文件结构干净合规，可以放心前往 GitHub Issue 提审！</span>
+          </div>
+        `;
+      } else {
+        auditDetails.innerHTML = issues.map(iss => `
+          <div class="audit-item ${iss.type}">
+            <span class="aud-icon">${iss.type === 'danger' ? '⛔' : '⚠️'}</span>
+            <span>${iss.msg}</span>
+          </div>
+        `).join("");
+      }
+    }
+  }
+
+  setupStudioInteractivity();
+  document.addEventListener("astro:page-load", setupStudioInteractivity);
+</script>
+
 <style>
   .page-header {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   .header-tag {
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--accent-amber);
+    color: var(--accent-amber, #e59a4c);
     letter-spacing: 0.1em;
     margin-bottom: 0.5rem;
   }
@@ -91,16 +458,353 @@ import Layout from "../layouts/Layout.astro";
   }
 
   .page-desc {
-    color: var(--text-muted);
+    color: var(--text-muted, #9aa1b0);
     font-size: 1rem;
     max-width: 680px;
     line-height: 1.6;
   }
 
+  .studio-tab-bar {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-subtle, #2b303c);
+    margin-bottom: 1.75rem;
+  }
+
+  .studio-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted, #9aa1b0);
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .studio-tab:hover {
+    color: var(--text-main, #f0f2f5);
+  }
+
+  .studio-tab.active {
+    color: var(--accent-amber, #e59a4c);
+    border-bottom-color: var(--accent-amber, #e59a4c);
+  }
+
+  .studio-panel {
+    display: none;
+  }
+
+  .studio-panel.active {
+    display: block;
+  }
+
+  .workbench-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 900px) {
+    .workbench-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background-color: var(--bg-surface, #181a20);
+    border: 1px solid var(--border-subtle, #2b303c);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+
+  .card-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--accent-amber, #e59a4c);
+    padding-left: 0.5rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .form-group.full-width {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+    color: var(--text-muted, #9aa1b0);
+    font-weight: 600;
+  }
+
+  .field-hint {
+    font-size: 0.75rem;
+    color: var(--text-faint, #606877);
+  }
+
+  .input-field {
+    background: var(--bg-base, #0f1013);
+    border: 1px solid var(--border-subtle, #2b303c);
+    border-radius: 3px;
+    padding: 8px 10px;
+    color: var(--text-main, #f0f2f5);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .input-field:focus {
+    border-color: var(--accent-amber, #e59a4c);
+  }
+
+  .select-field {
+    cursor: pointer;
+  }
+
+  .textarea-field {
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  .perms-checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+    background: var(--bg-base, #0f1013);
+    border: 1px solid var(--border-subtle, #2b303c);
+    border-radius: 4px;
+    padding: 10px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-main, #f0f2f5);
+    cursor: pointer;
+  }
+
+  .checkbox-label code {
+    color: var(--accent-amber, #e59a4c);
+  }
+
+  .preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .preview-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .json-code-box {
+    background: var(--bg-base, #0f1013);
+    border: 1px solid var(--border-subtle, #2b303c);
+    border-radius: 4px;
+    padding: 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85rem;
+    color: #e0b069;
+    overflow-x: auto;
+    max-height: 440px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-amber, #e59a4c);
+    color: #0f1013;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.1);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    border-color: var(--border-subtle, #2b303c);
+    color: var(--text-main, #f0f2f5);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent-amber, #e59a4c);
+    color: var(--accent-amber, #e59a4c);
+  }
+
+  .drop-zone-card {
+    border: 2px dashed var(--border-subtle, #2b303c);
+    background: var(--bg-surface, #181a20);
+    border-radius: 6px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .drop-zone-card.dragover {
+    border-color: var(--accent-amber, #e59a4c);
+    background: rgba(229, 154, 76, 0.05);
+  }
+
+  .drop-zone-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .drop-zone-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .drop-zone-desc {
+    color: var(--text-muted, #9aa1b0);
+    font-size: 0.9rem;
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.5;
+  }
+
+  .audit-result-card {
+    margin-top: 1.5rem;
+    background: var(--bg-surface, #181a20);
+    border: 1px solid var(--border-subtle, #2b303c);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+
+  .audit-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .audit-status-badge {
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .audit-status-badge.pass {
+    background: rgba(82, 196, 26, 0.15);
+    color: #52c41a;
+    border: 1px solid #52c41a;
+  }
+
+  .audit-status-badge.fail {
+    background: rgba(255, 77, 79, 0.15);
+    color: #ff4d4f;
+    border: 1px solid #ff4d4f;
+  }
+
+  .audit-status-badge.pending {
+    background: rgba(229, 154, 76, 0.15);
+    color: var(--accent-amber, #e59a4c);
+    border: 1px solid var(--accent-amber, #e59a4c);
+  }
+
+  .audit-title {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+
+  .audit-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: var(--bg-base, #0f1013);
+    border: 1px solid var(--border-subtle, #2b303c);
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (max-width: 600px) {
+    .audit-metrics {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .metric-item .m-label {
+    font-size: 0.75rem;
+    color: var(--text-faint, #606877);
+  }
+
+  .metric-item .m-val {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .audit-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .audit-item {
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .audit-item.success {
+    background: rgba(82, 196, 26, 0.08);
+    border: 1px solid rgba(82, 196, 26, 0.25);
+    color: #52c41a;
+  }
+
+  .audit-item.danger {
+    background: rgba(255, 77, 79, 0.08);
+    border: 1px solid rgba(255, 77, 79, 0.25);
+    color: #ff4d4f;
+  }
+
   .guide-grid {
     display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 2rem;
+    grid-template-columns: 1fr 280px;
+    gap: 1.5rem;
   }
 
   @media (max-width: 800px) {
@@ -110,69 +814,38 @@ import Layout from "../layouts/Layout.astro";
   }
 
   .guide-card {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
+    background-color: var(--bg-surface, #181a20);
+    border: 1px solid var(--border-subtle, #2b303c);
     border-radius: 4px;
-    padding: 1.75rem;
-    margin-bottom: 1.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
-  .card-heading {
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    border-left: 3px solid var(--accent-amber);
-    padding-left: 0.5rem;
-  }
-
-  .checklist {
+  .checklist, .step-list {
     padding-left: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
-    color: var(--text-muted);
+    gap: 0.75rem;
+    color: var(--text-muted, #9aa1b0);
     font-size: 0.9rem;
     line-height: 1.6;
   }
 
-  .checklist code {
-    background-color: var(--bg-base);
+  .checklist code, .step-list code {
+    background-color: var(--bg-base, #0f1013);
     padding: 0.1rem 0.35rem;
     border-radius: 3px;
-    color: var(--accent-amber);
-  }
-
-  .step-text {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-  }
-
-  .step-list {
-    padding-left: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
+    color: var(--accent-amber, #e59a4c);
   }
 
   .step-list a {
-    color: var(--accent-amber);
+    color: var(--accent-amber, #e59a4c);
     text-decoration: none;
   }
 
-  .step-list code {
-    background-color: var(--bg-base);
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    color: var(--accent-amber);
-  }
-
   .aside-box {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
+    background-color: var(--bg-surface, #181a20);
+    border: 1px solid var(--border-subtle, #2b303c);
     border-radius: 4px;
     padding: 1.5rem;
   }
@@ -185,7 +858,7 @@ import Layout from "../layouts/Layout.astro";
 
   .aside-desc {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: var(--text-muted, #9aa1b0);
     line-height: 1.6;
     margin-bottom: 1.25rem;
   }
@@ -193,6 +866,5 @@ import Layout from "../layouts/Layout.astro";
   .btn-block {
     width: 100%;
     margin-bottom: 0.75rem;
-    text-align: center;
   }
 </style>

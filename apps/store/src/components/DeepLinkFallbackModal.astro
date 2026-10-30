@@ -1,0 +1,438 @@
+---
+// DeepLinkFallbackModal.astro
+// 提供 daydrift:// 协议唤醒探测与智能降级安装自愈弹窗
+---
+
+<div id="deeplink-toast" class="dl-toast" aria-hidden="true">
+  <span class="dl-toast-icon">⚡</span>
+  <span class="dl-toast-text" id="dl-toast-text">正在唤醒《度日》游戏客户端...</span>
+</div>
+
+<div id="deeplink-modal-backdrop" class="dl-modal-backdrop" aria-hidden="true">
+  <div class="dl-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="dl-modal-title">
+    <div class="dl-modal-header">
+      <div class="dl-modal-tag">DEEP LINK STATUS</div>
+      <h2 id="dl-modal-title" class="dl-modal-title">未检测到《度日》客户端响应</h2>
+      <button type="button" class="dl-modal-close" id="btn-close-dl-modal" aria-label="关闭弹窗">×</button>
+    </div>
+
+    <div class="dl-modal-body">
+      <p class="dl-modal-summary">
+        浏览器已发送唤醒指令，但未检测到本地客户端窗口。这通常是因为游戏尚未启动，或系统尚未关联 <code class="dl-code">daydrift://</code> 协议。
+      </p>
+
+      <div class="dl-mod-badge-row" id="dl-mod-info-row">
+        <span class="dl-mod-name" id="dl-modal-mod-name">待安装模组</span>
+        <span class="dl-mod-version" id="dl-modal-mod-ver">v1.0.0</span>
+      </div>
+
+      <div class="dl-solution-list">
+        <!-- 方案 1: 直接下载 -->
+        <div class="dl-solution-card primary">
+          <div class="dl-solution-badge">推荐途径一</div>
+          <div class="dl-solution-title">直接下载分发包</div>
+          <p class="dl-solution-desc">下载官方离线 ZIP 分发包，进入游戏主菜单点击「模组扩展」，直接将文件拖拽放入界面即可秒级免解压安装。</p>
+          <div class="dl-solution-actions">
+            <a href="#" id="dl-modal-download-btn" class="dl-btn dl-btn-amber" download>
+              ⬇️ 下载分发包 (.zip)
+            </a>
+          </div>
+        </div>
+
+        <!-- 方案 2: 一键注册协议 -->
+        <div class="dl-solution-card">
+          <div class="dl-solution-badge">推荐途径二</div>
+          <div class="dl-solution-title">一键关联唤醒协议</div>
+          <p class="dl-solution-desc">下载免管理员权限的协议注册脚本，双击运行即可完成系统级 <code class="dl-code">daydrift://</code> 协议注册，后续点击均可一键唤醒。</p>
+          <div class="dl-solution-actions">
+            <a href="/tools/register_url_protocol.bat" class="dl-btn dl-btn-ghost" download>
+              🛠️ 下载协议关联脚本 (.bat)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dl-modal-footer">
+      <button type="button" class="dl-btn dl-btn-muted" id="btn-dismiss-dl-modal">我知道了</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupDeepLinkWatcher() {
+    const backdrop = document.getElementById("deeplink-modal-backdrop");
+    const toast = document.getElementById("deeplink-toast");
+    const toastText = document.getElementById("dl-toast-text");
+    const closeBtn = document.getElementById("btn-close-dl-modal");
+    const dismissBtn = document.getElementById("btn-dismiss-dl-modal");
+    const modNameEl = document.getElementById("dl-modal-mod-name");
+    const modVerEl = document.getElementById("dl-modal-mod-ver");
+    const downloadBtn = document.getElementById("dl-modal-download-btn") as HTMLAnchorElement;
+
+    if (!backdrop || !toast) return;
+
+    let timer: number | null = null;
+    let didBlur = false;
+
+    function showToast(msg: string, isSuccess = false) {
+      if (!toast || !toastText) return;
+      toastText.textContent = msg;
+      toast.className = "dl-toast active" + (isSuccess ? " success" : "");
+      window.setTimeout(() => {
+        toast.className = "dl-toast";
+      }, isSuccess ? 4000 : 2500);
+    }
+
+    function openModal(name: string, ver: string, zipUrl: string) {
+      if (!backdrop) return;
+      if (modNameEl) modNameEl.textContent = name || "未知模组";
+      if (modVerEl) modVerEl.textContent = ver ? `v${ver}` : "";
+      if (downloadBtn && zipUrl) {
+        downloadBtn.href = zipUrl;
+      }
+      backdrop.classList.add("open");
+      backdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      if (!backdrop) return;
+      backdrop.classList.remove("open");
+      backdrop.setAttribute("aria-hidden", "true");
+    }
+
+    closeBtn?.addEventListener("click", closeModal);
+    dismissBtn?.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) closeModal();
+    });
+
+    // 监听窗口失焦（若游戏被成功拉起或操作系统弹出协议弹窗，窗口通常会触发 blur）
+    window.addEventListener("blur", () => {
+      didBlur = true;
+      if (timer) {
+        window.clearTimeout(timer);
+        timer = null;
+        showToast("✨ 游戏已接管安装请求，请在游戏内查看！", true);
+      }
+    });
+
+    // 全局捕获所有 daydrift:// 协议点击
+    document.addEventListener("click", (e) => {
+      const anchor = (e.target as HTMLElement)?.closest("a");
+      if (!anchor || !anchor.href) return;
+
+      const rawHref = anchor.getAttribute("href") || "";
+      if (!rawHref.startsWith("daydrift://")) return;
+
+      e.preventDefault();
+
+      didBlur = false;
+      showToast("正在唤醒《度日》游戏客户端...");
+
+      let modId = "";
+      let modName = "";
+      let modVersion = "";
+      let downloadUrl = "";
+
+      try {
+        const parsed = new URL(rawHref);
+        const params = new URLSearchParams(parsed.search);
+        modId = params.get("id") || "";
+        modName = params.get("name") || modId;
+        modVersion = params.get("version") || "";
+        downloadUrl = params.get("url") || "";
+      } catch {
+        // fallback regex parsing
+        const matchUrl = rawHref.match(/url=([^&]+)/);
+        if (matchUrl) downloadUrl = decodeURIComponent(matchUrl[1]);
+        const matchName = rawHref.match(/name=([^&]+)/);
+        if (matchName) modName = decodeURIComponent(matchName[1]);
+      }
+
+      // 触发唤醒
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = rawHref;
+      document.body.appendChild(iframe);
+      window.setTimeout(() => {
+        try {
+          document.body.removeChild(iframe);
+        } catch {}
+      }, 2000);
+
+      // 设置 1600ms 探测计时器
+      if (timer) window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        timer = null;
+        if (!didBlur) {
+          openModal(modName, modVersion, downloadUrl);
+        }
+      }, 1600);
+    });
+  }
+
+  setupDeepLinkWatcher();
+  document.addEventListener("astro:page-load", setupDeepLinkWatcher);
+</script>
+
+<style>
+  .dl-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(18, 19, 23, 0.96);
+    border: 1px solid var(--border-subtle, #2e3038);
+    border-left: 3px solid var(--accent-amber, #e0b069);
+    padding: 12px 18px;
+    border-radius: 4px;
+    color: var(--text-base, #e4e4e7);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+
+  .dl-toast.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .dl-toast.success {
+    border-left-color: #52c41a;
+  }
+
+  .dl-toast-icon {
+    font-size: 1.1rem;
+  }
+
+  .dl-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 9, 12, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    padding: 16px;
+  }
+
+  .dl-modal-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .dl-modal-dialog {
+    background: var(--bg-surface, #15161b);
+    border: 1px solid var(--border-subtle, #272832);
+    border-radius: 6px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    animation: modal-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes modal-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .dl-modal-header {
+    padding: 18px 20px 12px;
+    border-bottom: 1px solid var(--border-subtle, #272832);
+    position: relative;
+  }
+
+  .dl-modal-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent-amber, #e0b069);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .dl-modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-base, #f4f4f5);
+  }
+
+  .dl-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #8e909a);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .dl-modal-close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .dl-modal-body {
+    padding: 20px;
+  }
+
+  .dl-modal-summary {
+    margin: 0 0 16px;
+    color: var(--text-muted, #a1a1aa);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .dl-code {
+    background: rgba(224, 176, 105, 0.12);
+    color: var(--accent-amber, #e0b069);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.85rem;
+  }
+
+  .dl-mod-badge-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-base, #0c0d10);
+    border: 1px solid var(--border-subtle, #272832);
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  .dl-mod-name {
+    font-weight: 600;
+    color: var(--text-base, #f4f4f5);
+    font-size: 0.9rem;
+  }
+
+  .dl-mod-version {
+    font-size: 0.75rem;
+    color: var(--text-muted, #71717a);
+    font-family: monospace;
+  }
+
+  .dl-solution-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .dl-solution-card {
+    background: var(--bg-base, #0d0e12);
+    border: 1px solid var(--border-subtle, #24252e);
+    border-radius: 4px;
+    padding: 14px;
+    position: relative;
+  }
+
+  .dl-solution-card.primary {
+    border-color: rgba(224, 176, 105, 0.35);
+    background: linear-gradient(180deg, rgba(224, 176, 105, 0.04) 0%, rgba(13, 14, 18, 1) 100%);
+  }
+
+  .dl-solution-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent-amber, #e0b069);
+    margin-bottom: 4px;
+  }
+
+  .dl-solution-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-base, #f4f4f5);
+    margin-bottom: 6px;
+  }
+
+  .dl-solution-desc {
+    margin: 0 0 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted, #a1a1aa);
+    line-height: 1.5;
+  }
+
+  .dl-solution-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+  }
+
+  .dl-btn-amber {
+    background: var(--accent-amber, #e0b069);
+    color: #121316;
+  }
+
+  .dl-btn-amber:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  .dl-btn-ghost {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-base, #e4e4e7);
+    border: 1px solid var(--border-subtle, #333);
+  }
+
+  .dl-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .dl-btn-muted {
+    background: transparent;
+    color: var(--text-muted, #8e909a);
+  }
+
+  .dl-btn-muted:hover {
+    color: #fff;
+  }
+
+  .dl-modal-footer {
+    padding: 12px 20px;
+    background: var(--bg-base, #0d0e12);
+    border-top: 1px solid var(--border-subtle, #272832);
+    display: flex;
+    justify-content: flex-end;
+  }
+</style>

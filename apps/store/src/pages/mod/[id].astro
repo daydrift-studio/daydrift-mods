@@ -27,8 +27,19 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
   "world.flag": { label: "全局标记", desc: "跨场景读写全局生活状态黑板标记" },
   "storage.mod": { label: "独立持久化", desc: "读写本 Mod 命名空间下的隔离本地存档" },
   "asset.texture": { label: "贴图加载", desc: "动态读取本 Mod 内部的 PNG 纹理资源" },
-  "asset.audio": { label: "音频加载", desc: "动态读取本 Mod 内部的 OGG 音频流资源" }
+  "asset.audio": { label: "音频加载", desc: "动态读取本 Mod 内部的 OGG 音频流资源" },
+  "network_packet": { label: "网络通信", desc: "在联机房间内向对端广播或收发自定义 Mod 网络报文" },
+  "scene_tampering": { label: "场景拓扑变更", desc: "在当前场景树内动态注入实体建筑、碰撞体或物理门" },
+  "ui_mounting": { label: "界面挂载", desc: "在游戏主 HUD、常驻顶栏或抽屉层挂载自定义 UI 节点" }
 };
+
+const TIER_META: Record<string, { label: string; color: string; desc: string }> = {
+  data: { label: "Tier 1: 纯数据", color: "#10b981", desc: "声明式配置，零代码高安全性" },
+  lua: { label: "Tier 2: 沙箱脚本", color: "#3b82f6", desc: "受控 Lua 5.1 沙盒与双端同步" },
+  native: { label: "Tier 3: 原生 PCK", color: "#ec4899", desc: "全权 GDScript/C# 支配力与原生钩子" }
+};
+
+const tierInfo = TIER_META[mod.type] || { label: `Tier: ${mod.type}`, color: "#8b5cf6", desc: "未知模组形态" };
 ---
 
 <Layout title={`${mod.name} (v${mod.version})`} description={mod.description}>
@@ -44,6 +55,9 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
         <div class="title-row">
           <h1 class="mod-title">{mod.name}</h1>
           <span class="mod-version-tag">v{mod.version}</span>
+          <span class="badge badge-tier" style={`background-color: ${tierInfo.color}1a; color: ${tierInfo.color}; border: 1px solid ${tierInfo.color}66; font-weight: 700;`}>
+            {tierInfo.label}
+          </span>
           <span class:list={["badge", mod.channel === "beta" ? "badge-beta" : "badge-verified"]}>
             {mod.channel === "beta" ? "先行测试" : "官方认证"}
           </span>
@@ -143,7 +157,10 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
           </div>
 
           <div class="sha-box">
-            <div class="sha-label">ZIP SHA-256 校验和：</div>
+            <div class="sha-header">
+              <span class="sha-label">ZIP SHA-256 校验和：</span>
+              <button type="button" class="btn-copy-small" data-copy={mod.sha256} title="复制 SHA-256 校验值">复制哈希</button>
+            </div>
             <div class="sha-val" title={mod.sha256}>{mod.sha256}</div>
           </div>
         </div>
@@ -437,10 +454,33 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
     border: 1px solid var(--border-subtle);
   }
 
+  .sha-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+  }
+
   .sha-label {
     font-size: 0.75rem;
     color: var(--text-faint);
-    margin-bottom: 0.25rem;
+  }
+
+  .btn-copy-small {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn-copy-small:hover {
+    background: var(--accent-amber);
+    color: #12141a;
+    border-color: var(--accent-amber);
   }
 
   .sha-val {
@@ -484,16 +524,33 @@ const PERMISSION_DESCRIPTIONS: Record<string, { label: string; desc: string }> =
 </style>
 
 <script>
-  function setupDeeplink() {
+  function setupPageActions() {
     const btn = document.getElementById("btn-deeplink-install");
     const hint = document.getElementById("deeplink-hint");
-    if (!btn || !hint) return;
+    if (btn && hint) {
+      btn.addEventListener("click", () => {
+        hint.classList.add("hint-active");
+      });
+    }
 
-    btn.addEventListener("click", () => {
-      hint.classList.add("hint-active");
+    document.querySelectorAll(".btn-copy-small").forEach((b) => {
+      b.addEventListener("click", async () => {
+        const val = b.getAttribute("data-copy");
+        if (!val) return;
+        try {
+          await navigator.clipboard.writeText(val);
+          const original = b.textContent;
+          b.textContent = "已复制";
+          setTimeout(() => {
+            b.textContent = original;
+          }, 1800);
+        } catch {
+          // fallback ignore
+        }
+      });
     });
   }
 
-  document.addEventListener("DOMContentLoaded", setupDeeplink);
-  document.addEventListener("astro:page-load", setupDeeplink);
+  document.addEventListener("DOMContentLoaded", setupPageActions);
+  document.addEventListener("astro:page-load", setupPageActions);
 </script>
